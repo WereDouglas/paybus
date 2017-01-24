@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Route extends CI_Controller {
+class Bus extends CI_Controller {
 
     function __construct() {
 
@@ -17,7 +17,7 @@ class Route extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT * FROM route");
+        $query = $this->Md->query("SELECT *,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -25,7 +25,7 @@ class Route extends CI_Controller {
         } else {
             $data['clients'] = array();
         }
-        $this->load->view('view-routes', $data);
+        $this->load->view('view-bus', $data);
     }
 
     public function GUID() {
@@ -43,11 +43,11 @@ class Route extends CI_Controller {
         $name = $this->input->post('name');
         if ($name != "") {
 
-            $route = array('name' => $this->input->post('name'), 'startp' => $this->input->post('startp'), 'endp' => $this->input->post('endp'), 'cost' => $this->input->post('cost'), 'startcoord' => $this->input->post('endcoord'), 'start_time' => $this->input->post('start_time'), 'end_time' => $this->input->post('end_time'), 'distance' => $this->input->post('distance'),'created' => date('d-m-Y'));
-            $this->Md->save($route, 'route');           
+            $b = array('name' => $this->input->post('name'), 'companyID' => $this->input->post('companyID'), 'regNo' => $this->input->post('regNo'), 'routeID' => $this->input->post('routeID'),'created' => date('d-m-Y'),'active'=>'true');
+            $this->Md->save($b, 'bus');           
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);
-            redirect('route', 'refresh');
+            redirect('bus', 'refresh');
         }
     }
 
@@ -69,7 +69,7 @@ class Route extends CI_Controller {
                     //update the values
                     $task = array($field_name => $val);
                     // $this->Md->update($user_id, $task, 'tasks');
-                    $this->Md->update_dynamic($user_id, 'id', 'route', $task);
+                    $this->Md->update_dynamic($user_id, 'id', 'bus', $task);
                     echo "Updated";
                 } else {
                     echo "Invalid Requests";
@@ -80,8 +80,9 @@ class Route extends CI_Controller {
         }
     }
 
+   
     public function lists() {
-        $query = $this->Md->query("SELECT * FROM route");
+        $query = $this->Md->query("SELECT * FROM bus");
         //$query = $this->Md->query("SELECT * FROM client");
         echo json_encode($query);
     }
@@ -91,7 +92,7 @@ class Route extends CI_Controller {
             $this->load->helper(array('form', 'url'));
             $id = urldecode($this->uri->segment(3));
 
-            $query = $this->Md->cascade($id, 'route', 'id');
+            $query = $this->Md->cascade($id, 'bus', 'id');
           
             if ($this->db->affected_rows() > 0) {
 

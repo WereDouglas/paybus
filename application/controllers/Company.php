@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Route extends CI_Controller {
+class Company extends CI_Controller {
 
     function __construct() {
 
@@ -17,7 +17,7 @@ class Route extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT * FROM route");
+        $query = $this->Md->query("SELECT * FROM company");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -25,7 +25,7 @@ class Route extends CI_Controller {
         } else {
             $data['clients'] = array();
         }
-        $this->load->view('view-routes', $data);
+        $this->load->view('view-companies', $data);
     }
 
     public function GUID() {
@@ -40,14 +40,27 @@ class Route extends CI_Controller {
         $this->load->helper(array('form', 'url'));
         //user information
         // $clientID = $this->GUID();
-        $name = $this->input->post('name');
-        if ($name != "") {
+        if ($this->input->post('name') != "") {
+            ///organisation image uploads
+            $file_element_name = 'userfile';
+            $config['file_name'] = $this->input->post('name');
+            $config['upload_path'] = 'uploads/';
+            $config['allowed_types'] = '*';
+            $config['encrypt_name'] = FALSE;
+            $this->load->library('upload', $config);
+            if (!$this->upload->do_upload($file_element_name)) {
+                $status = 'errors';
+                $msg = $this->upload->display_errors('', '');
+                $status .= '<div class="alert alert-error"> <strong>' . $msg . '</strong></div>';
+            }
+            $data = $this->upload->data();
+            $userfile = $data['file_name'];
+            $comp = array('name' => $this->input->post('name'), 'location' => $this->input->post('location'),'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
+            $this->Md->save($comp, 'company');
 
-            $route = array('name' => $this->input->post('name'), 'startp' => $this->input->post('startp'), 'endp' => $this->input->post('endp'), 'cost' => $this->input->post('cost'), 'startcoord' => $this->input->post('endcoord'), 'start_time' => $this->input->post('start_time'), 'end_time' => $this->input->post('end_time'), 'distance' => $this->input->post('distance'),'created' => date('d-m-Y'));
-            $this->Md->save($route, 'route');           
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);
-            redirect('route', 'refresh');
+            redirect('company', 'refresh');
         }
     }
 
@@ -69,7 +82,7 @@ class Route extends CI_Controller {
                     //update the values
                     $task = array($field_name => $val);
                     // $this->Md->update($user_id, $task, 'tasks');
-                    $this->Md->update_dynamic($user_id, 'id', 'route', $task);
+                    $this->Md->update_dynamic($user_id, 'id', 'company', $task);
                     echo "Updated";
                 } else {
                     echo "Invalid Requests";
@@ -80,8 +93,9 @@ class Route extends CI_Controller {
         }
     }
 
+   
     public function lists() {
-        $query = $this->Md->query("SELECT * FROM route");
+        $query = $this->Md->query("SELECT * FROM company");
         //$query = $this->Md->query("SELECT * FROM client");
         echo json_encode($query);
     }
@@ -91,7 +105,7 @@ class Route extends CI_Controller {
             $this->load->helper(array('form', 'url'));
             $id = urldecode($this->uri->segment(3));
 
-            $query = $this->Md->cascade($id, 'route', 'id');
+            $query = $this->Md->cascade($id, 'company', 'id');
           
             if ($this->db->affected_rows() > 0) {
 

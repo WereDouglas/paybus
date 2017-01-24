@@ -145,18 +145,21 @@
                             <a class="active-menu"  href="index.html"><i class="fa fa-dashboard "></i>Dashboard</a>
                         </li>
                         <li>
+                            <a target="frame" href="<?php echo base_url() . "index.php/company/"; ?>"><i class="fa fa-connectdevelop"></i>Companies </a>
+
+                        </li>
+                        <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/route/"; ?>"><i class="fa fa-road"></i>Routes </a>
 
                         </li>
 
                         <li>
-                            <a href="table.html"><i class="fa fa-bus "></i>Buses </a>
+                            <a target="frame" href="<?php echo base_url() . "index.php/bus/"; ?>"><i class="fa fa-bus "></i>Buses </a>
 
                         </li>
 
-
                         <li>
-                            <a href="forms.html"><i class="fa fa-user "></i>Drivers</a>
+                            <a target="frame" href="<?php echo base_url() . "index.php/driver/"; ?>"><i class="fa fa-user "></i>Drivers</a>
                         </li>
 
                         <li>
