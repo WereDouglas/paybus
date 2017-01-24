@@ -7,7 +7,7 @@ class User extends CI_Controller {
     function __construct() {
 
         parent::__construct();
-      //  error_reporting(E_PARSE);
+        error_reporting(E_PARSE);
         $this->load->model('Md');
         $this->load->library('session');
         $this->load->library('encrypt');
@@ -18,7 +18,7 @@ class User extends CI_Controller {
 
     public function index() {
         //  $query = $this->Md->query("SELECT * FROM client where org = '" . $this->session->userdata('orgID') . "' ");
-        $query = $this->Md->query("SELECT * FROM user WHERE orgID= '" . $this->session->userdata('orgID') . "' ");
+        $query = $this->Md->query("SELECT *,user.id AS id ,company.name AS company,user.name AS name FROM user LEFT JOIN company ON user.company = company.id");
 
         if ($query) {
             $data['users'] = $query;
@@ -40,13 +40,13 @@ class User extends CI_Controller {
 
         $this->load->helper(array('form', 'url'));
         //user information
-        $userID = $this->GUID();
+        // $userID = $this->GUID();
         $name = $this->input->post('name');
 
         if ($name != "") {
             ///organisation image uploads
             $file_element_name = 'userfile';
-            $config['file_name'] = $userID;
+            $config['file_name'] = $this->input->post('name');
             $config['upload_path'] = 'uploads/';
             $config['allowed_types'] = '*';
             $config['encrypt_name'] = FALSE;
@@ -58,7 +58,7 @@ class User extends CI_Controller {
             }
             $data = $this->upload->data();
             $userfile = $data['file_name'];
-            $user = array('userID' => $userID, 'name' => $this->input->post('name'), 'department' => $this->input->post('department'), 'designation' => $this->input->post('designation'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')), 'kin' => $this->input->post('kin'), 'kincontact' => $this->input->post('kincontact'), 'address' => $this->input->post('address'), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true', 'orgID' => $this->session->userdata('orgID'));
+            $user = array('name' => $this->input->post('name'), 'company' => $this->input->post('companyID'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
             $this->Md->save($user, 'user');
 
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
@@ -71,7 +71,7 @@ class User extends CI_Controller {
 
         $this->load->helper(array('form', 'url'));
         $name = urldecode($this->uri->segment(3));
-        $query = $this->Md->query("SELECT * FROM user where userID ='" . $name . "' AND orgID='" . $this->session->userdata('orgID') . "'");
+        $query = $this->Md->query("SELECT * FROM user where id ='" . $name . "'");
 
         if ($query) {
             $data['users'] = $query;
@@ -100,7 +100,7 @@ class User extends CI_Controller {
                     //update the values
                     $task = array($field_name => $val);
                     // $this->Md->update($user_id, $task, 'tasks');
-                    $this->Md->update_dynamic($user_id, 'userID', 'user', $task);
+                    $this->Md->update_dynamic($user_id, 'id', 'user', $task);
                     echo "Updated";
                 } else {
                     echo "Invalid Requests";
@@ -114,10 +114,10 @@ class User extends CI_Controller {
     public function reset() {
         $password = $this->generateRandomString();
 
-        $userID = trim($this->input->post('userID'));
+        $userID = trim($this->input->post('id'));
         // $userid = 'CB501C98-74B4-4480-BFBE-6447CF3BBB18';
         //query_cell($string, $cell)
-        $email = $this->Md->query_cell("SELECT * FROM user where userID= '" . $userID . "'", 'email');
+        $email = $this->Md->query_cell("SELECT * FROM user where id= '" . $userID . "'", 'email');
         if ($email == "") {
             echo 'No email specified';
             return;
@@ -131,14 +131,14 @@ class User extends CI_Controller {
         echo 'New Password is reset please check mail( SPAM MAIL ESPECIALLY ) ' . $password;
 
         $reciever = $this->Md->query_cell("SELECT email FROM users WHERE id ='$userID' ", 'email');
-         $body = $reciever . ' Your Password has been changed to  <b>' . $newer . '</b> for Estate professional login panel';
+        $body = $reciever . ' Your Password has been changed to  <b>' . $newer . '</b> for Estate professional login panel';
         $subject = 'Password reset,changed password Online Property Professional Account ';
 
         //$mail = array('message' => $message, 'subject' => $subject, 'schedule' => date('d-m-Y'), 'reciever' => $email, 'created' => date('Y-m-d H:i:s'), 'org' => "", 'sent' => 'false', 'guid' => '');
         //$this->Md->save($mail, 'emails');
-        
+
         $from = "noreply@estateprofessional.pro";
-       // $subject = " ";
+        // $subject = " ";
         if ($email != "") {
 
             $this->email->from($from, 'Estate professionl');
@@ -169,7 +169,7 @@ class User extends CI_Controller {
                     //update the values
                     $task = array($field_name => $val);
                     // $this->Md->update($user_id, $task, 'tasks');
-                    $this->Md->update_dynamic($user_id, 'userID', 'user', $task);
+                    $this->Md->update_dynamic($user_id, 'id', 'user', $task);
                     echo "Updated";
                 } else {
                     echo "Invalid Requests";
@@ -266,33 +266,25 @@ class User extends CI_Controller {
 
     public function lists() {
         //  $query = $this->Md->query("SELECT * FROM client WHERE  orgID='" . $this->session->userdata('orgID') . "'");
-        $query = $this->Md->query("SELECT * FROM client");
+        $query = $this->Md->query("SELECT * FROM user");
         echo json_encode($query);
     }
 
     public function delete() {
-        if ($this->session->userdata('level') == 1) {
-            $this->load->helper(array('form', 'url'));
-            $id = urldecode($this->uri->segment(3));
-            $name = urldecode($this->uri->segment(4));
-            $query = $this->Md->delete($id, 'client');
-            //cascade($id,$table,$field)
 
-            if ($this->db->affected_rows() > 0) {
+        $this->load->helper(array('form', 'url'));
+        $id = urldecode($this->uri->segment(3));
+        $query = $this->Md->delete($id, 'user');
+        //cascade($id,$table,$field)
+        //$query = $this->Md->cascade($id, 'user', 'id');
+        if ($this->db->affected_rows() > 0) {
 
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">
+            $this->session->set_flashdata('msg', '<div class="alert alert-error">
                                                    
                                                 <strong>
                                                 Information deleted	</strong>									
 						</div>');
-                redirect('client', 'refresh');
-            }
-        } else {
-            $this->session->set_flashdata('msg', '<div class="alert alert-error">                                                   
-                                                <strong>
-                                                 You cannot carry out this action ' . '	</strong>									
-						</div>');
-            redirect('client', 'refresh');
+            redirect('user', 'refresh');
         }
     }
 

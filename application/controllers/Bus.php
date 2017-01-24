@@ -43,7 +43,7 @@ class Bus extends CI_Controller {
         $name = $this->input->post('name');
         if ($name != "") {
 
-            $b = array('name' => $this->input->post('name'), 'companyID' => $this->input->post('companyID'), 'regNo' => $this->input->post('regNo'), 'routeID' => $this->input->post('routeID'),'created' => date('d-m-Y'),'active'=>'true');
+            $b = array('name' => $this->input->post('name'), 'companyID' => $this->input->post('companyID'), 'regNo' => $this->input->post('regNo'), 'seat' => $this->input->post('seats'), 'routeID' => $this->input->post('routeID'),'created' => date('d-m-Y'),'active'=>'true');
             $this->Md->save($b, 'bus');           
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);

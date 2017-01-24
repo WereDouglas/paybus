@@ -306,6 +306,10 @@ select {
     display: none;
     opacity: 0;
 }
+.receipt{
+    border:0;outline:0; height:32px;  border-bottom: 0px solid grey;width: 100%;
+    
+}
     
 
 

@@ -30,6 +30,7 @@
                                     <th>Name</th>
                                     <th>Registration No.</th>
                                     <th>Company</th>
+                                      <th>No. of seats</th>
                                     <th class="hidden-phone">Route</th>
                                     <th class="hidden-phone">Active</th>
                                     <th class="hidden-phone">Created</th>
@@ -52,8 +53,11 @@
                                             </td>
 
                                             <td id="regNo:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->regNo; ?></td>
-                                            <td >
+                                            <td>
                                                 <?php echo $loop->company; ?>
+                                            </td>
+                                             <td id="seat:<?php echo $loop->id; ?>" contenteditable="true">
+                                                <?php echo $loop->seat; ?>
                                             </td>
                                             <td >
                                                 <?php echo $loop->route; ?>
@@ -126,7 +130,13 @@
                         <div class="col-sm-10">
                             <input type="text" name="regNo" placeholder="Bus registration No." id="regNo" required class="form-control"/>
                         </div>
-                    </div>                  
+                    </div>
+                     <div class="form-group">
+
+                        <div class="col-sm-10">
+                            <input type="text" name="seats" placeholder="No. of seats" id="seats"  class="form-control"/>
+                        </div>
+                    </div>
 
 
                     <div class="form-group">

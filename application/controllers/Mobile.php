@@ -38,38 +38,45 @@ class Mobile extends CI_Controller {
 
         $this->load->helper(array('form', 'url'));
 
-        $username = $this->input->post('username');
-        $password = $this->input->post('password');
-        $password_now = $password;
+         $contact = $this->input->post('contact');
+         $password = $this->input->post('password');
+        //$contact = '0782481746';
+       // $password = '1234562';
 
-        $get_result = $this->Md->check($username, 'email', 'users');
-        if (!$get_result) {
-            $result = $this->Md->get('email', $username, 'users');
-            // var_dump($result);
-            foreach ($result as $res) {
-                $key = $username;
-                $password = $this->encrypt->decode($res->password, $key);
+       
+         $query = $this->Md->query("SELECT * FROM user WHERE contact='".$contact."'");
 
-                if ($password_now == $password) {
+       
+        if ( $query ) {
+
+            foreach ( $query  as $res) {
+
+                if ($res->password == md5($password)) {
+                    if ($res->active != 'true') {
+                        $b["info"] = "Inactive accout please contact administration ";
+                        $b["status"] = "false";
+                        echo json_encode($b);
+                        return;
+                    }
                     $b["info"] = "login successfull";
                     $b["status"] = "true";
-                    $b["orgid"] = $res->org;
-                    $b["userid"] = $res->id;
-                    $orgname = $this->Md->query_cell("SELECT name FROM organisation WHERE id ='" . $res->org . "'", 'name');
-                    $b["orgname"] = $orgname;
                     $b["name"] = $res->name;
+                    $b["email"] = $res->email;
+                    $b["image"] = $res->image;
+                    $b["userID"] = $res->id;
+                    $b["contact"] = $res->name;
 
                     echo json_encode($b);
                     return;
                 } else {
-                    $b["info"] = "invalid password";
+                    $b["info"] = "Invalid password";
                     $b["status"] = "false";
                     echo json_encode($b);
                     return;
                 }
             }
         } else {
-            $b["info"] = "invalid username!";
+            $b["info"] = "No such contact!";
             $b["status"] = "false";
             echo json_encode($b);
             return;

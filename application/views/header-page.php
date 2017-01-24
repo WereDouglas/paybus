@@ -128,6 +128,14 @@
                             </ul>
                             
                         </li>
+                         <li class="dropdown">
+                            
+                           <a target="frame" href="<?php echo base_url() . "index.php/payment/pay"; ?>">
+                              Make payment  
+                                <img src="images/cash.png" height="20px" width="20px" class="img-circle" />
+                            </a>
+                            
+                        </li>
                     </ul>
 
                 </div>
@@ -161,19 +169,17 @@
                         <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/driver/"; ?>"><i class="fa fa-user "></i>Drivers</a>
                         </li>
-
-                        <li>
-                            <a href="forms.html"><i class="fa fa-barcode"></i>Devices</a>
-                        </li>
-
-
-                        <li>
-                            <a href="blank.html"><i class="fa fa-money"></i>Payments</a>
+                         <li>
+                            <a target="frame" href="<?php echo base_url() . "index.php/user/"; ?>"><i class="fa fa-user "></i>System users</a>
                         </li>
 
                         <li>
-                            <a href="forms.html"><i class="fa fa-user-plus "></i>Passengers</a>
+                            <a target="frame" href="<?php echo base_url() . "index.php/device/"; ?>"><i class="fa fa-barcode"></i>Devices</a>
                         </li>
+                         <li>
+                            <a target="frame" href="<?php echo base_url() . "index.php/payment/"; ?>"><i class="fa fa-barcode"></i>Payments</a>
+                        </li>
+
 
                     </ul>
                 </div>
