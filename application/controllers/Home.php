@@ -57,49 +57,7 @@ class Home extends CI_Controller {
 
     public function start() {
 
-        $query = $this->Md->query("SELECT * FROM client WHERE orgID = '" . $this->session->userdata('orgID') . "' ");
-
-        if ($query) {
-            $data['clients'] = $query;
-        } else {
-            $data['clients'] = array();
-        }
-        $query = $this->Md->query("SELECT * FROM estate where orgID = '" . $this->session->userdata('orgID') . "' ");
-
-
-        if ($query) {
-            $data['estates'] = $query;
-        } else {
-            $data['estates'] = array();
-        }
-        $query = $this->Md->query("SELECT * FROM tenant where orgID = '" . $this->session->userdata('orgID') . "' ");
-
-        if ($query) {
-            $data['tenants'] = $query;
-        } else {
-            $data['tenants'] = array();
-        }
-        $query = $this->Md->query("SELECT * FROM user WHERE orgID= '" . $this->session->userdata('orgID') . "' ");
-
-        if ($query) {
-            $data['users'] = $query;
-        } else {
-            $data['users'] = array();
-        }
-        $query = $this->Md->query("SELECT *,tenant.name AS tenant,room.name AS name,estate.name AS estate FROM room LEFT JOIN tenant ON  room.tenantID = tenant.tenantID LEFT JOIN estate ON  room.estateID = estate.estateID where room.orgID = '" . $this->session->userdata('orgID') . "'");
-
-        if ($query) {
-            $data['rooms'] = $query;
-        } else {
-            $data['rooms'] = array();
-        }
-        $query = $this->Md->query("SELECT *  FROM tenant WHERE orgID = '" . $this->session->userdata('orgID') . "'");
-
-        if ($query) {
-            $data['rent'] = $query;
-        } else {
-            $data['rent'] = array();
-        }
+        
         $this->load->view('start-page', $data);
     }
 

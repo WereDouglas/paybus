@@ -43,8 +43,8 @@ class Route extends CI_Controller {
         $name = $this->input->post('name');
         if ($name != "") {
 
-            $route = array('name' => $this->input->post('name'), 'startp' => $this->input->post('startp'), 'endp' => $this->input->post('endp'), 'cost' => $this->input->post('cost'), 'startcoord' => $this->input->post('endcoord'), 'start_time' => $this->input->post('start_time'), 'end_time' => $this->input->post('end_time'), 'distance' => $this->input->post('distance'),'created' => date('d-m-Y'));
-            $this->Md->save($route, 'route');           
+            $route = array('name' => $this->input->post('name'), 'startp' => $this->input->post('startp'), 'endp' => $this->input->post('endp'), 'cost' => $this->input->post('cost'), 'startcoord' => $this->input->post('endcoord'), 'start_time' => $this->input->post('start_time'), 'end_time' => $this->input->post('end_time'), 'distance' => $this->input->post('distance'), 'created' => date('d-m-Y'));
+            $this->Md->save($route, 'route');
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);
             redirect('route', 'refresh');
@@ -86,23 +86,49 @@ class Route extends CI_Controller {
         echo json_encode($query);
     }
 
+    public function arraylist() {
+        //$query = $this->Md->query("SELECT * FROM route");
+        //$query = $this->Md->query("SELECT * FROM client");
+        
+        $query = $this->Md->query("SELECT * FROM route ");
+        if ($query) {
+                   $routes = array();
+                   $r = array();
+                
+            foreach ($query as $res) {
+              
+                    $b["id"] = $res->id;
+                    $b["name"] = $res->name;
+                    $b["cost"] = $res->cost;
+                    $b["start"] = $res->startp;
+                    $b["stop"] = $res->endp;
+                    $b["distance"] = $res->distance;               
+
+                   $routes[] = $b;
+                              
+            }
+            $r["routes"]= $routes;
+            echo json_encode($r);
+        }
+     
+    }
+
     public function delete() {
-      
-            $this->load->helper(array('form', 'url'));
-            $id = urldecode($this->uri->segment(3));
 
-            $query = $this->Md->cascade($id, 'route', 'id');
-          
-            if ($this->db->affected_rows() > 0) {
+        $this->load->helper(array('form', 'url'));
+        $id = urldecode($this->uri->segment(3));
 
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">
+        $query = $this->Md->cascade($id, 'route', 'id');
+
+        if ($this->db->affected_rows() > 0) {
+
+            $this->session->set_flashdata('msg', '<div class="alert alert-error">
                                                    
                                                 <strong>
                                                 Information deleted	</strong>									
 						</div>');
-                redirect('route', 'refresh');
-            }
-      
+            redirect('route', 'refresh');
+        }
     }
 
 }

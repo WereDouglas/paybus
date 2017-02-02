@@ -17,7 +17,7 @@ class Payment extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route FROM payment LEFT JOIN route ON payment.routeID = route.id");
+        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS date FROM payment LEFT JOIN route ON payment.routeID = route.id");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -89,10 +89,10 @@ class Payment extends CI_Controller {
             echo ' <div class="form-group">
                     <label class="col-sm-4">Seat No.</label>
                         <div class="col-sm-4 ">
-                            <input type="text" name="seat" value="' . (($seats)-($seats - count($payments))+1) . '"  class="receipt"/>
+                            <input type="text" name="seat" value="' . (($seats) - ($seats - count($payments)) + 1) . '"  class="receipt"/>
                         </div>
                     </div>';
-            echo '<input type="hidden" name="busID" value="' .$busID. '"  class="receipt"/>';
+            echo '<input type="hidden" name="busID" value="' . $busID . '"  class="receipt"/>';
         }
     }
 
@@ -106,13 +106,24 @@ class Payment extends CI_Controller {
 
     public function create() {
         $this->load->helper(array('form', 'url'));
-        //user information
-        // $clientID = $this->GUID();
-        $name = $this->input->post('contact');
-        if ($name != "") {
+        $contact = $this->input->post('contact');
+        // $contact = "071234567";
+        $route = $this->input->post('routeID');
+        // $route="1";
+        if ($contact != "") {
+            if ($route != "") {
+                $busID = $this->Md->query_cell("SELECT * FROM bus WHERE routeID= '" . $this->input->post('routeID') . "' AND active ='true'", 'id');
+                $bus = $this->Md->query_cell("SELECT * FROM bus WHERE routeID= '" . $this->input->post('routeID') . "' AND active ='true'", 'regNo');
+                $p = array('name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $bus, 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $this->input->post('routeID'), 'busID' => $busID, 'created' => date('d-m-Y', strtotime($this->input->post('date'))));
+                $this->Md->save($p, 'payment');
+            }
 
-            $p = array('name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $this->input->post('bus'), 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $this->input->post('route'), 'busID' => $this->input->post('busID'), 'created' => date('d-m-Y', strtotime($this->input->post('date'))));
-            $this->Md->save($p, 'payment');
+            if ($this->input->post('device') == "true") {
+                $b["info"] = "information saved !";
+                $b["status"] = "true";
+                echo json_encode($b);
+                return;
+            }
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);
             redirect('payment/pay', 'refresh');

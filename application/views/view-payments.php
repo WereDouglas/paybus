@@ -49,7 +49,7 @@
                                                 <?php echo $loop->id; ?>
                                             </td>
                                             <td>
-                                                <?php echo $loop->created; ?>
+                                                <?php echo $loop->date; ?>
                                             </td>
                                              <td id="contact:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->contact; ?>
