@@ -33,7 +33,8 @@
                                     <th class="hidden-phone">Bus</th>
                                     <th class="hidden-phone">Seat</th>
                                     <th class="hidden-phone">Cost</th>                                   
-                                    <th class="hidden-phone">Route</th>                                   
+                                    <th class="hidden-phone">Route</th>
+                                     <th class="hidden-phone">Bar code</th> 
                                     <th class="hidden-phone">Actions</th>
 
                                 </tr>
@@ -66,7 +67,8 @@
                                                 <?php echo $loop->seat; ?>
                                             </td>
                                             <td ><?php echo $loop->cost; ?></td>
-                                              <td ><?php echo $loop->route; ?></td>                                           
+                                              <td ><?php echo $loop->route; ?></td> 
+                                               <td ><?php echo $loop->barcode; ?></td> 
                                             <td class="edit_td">
                                                 <a class="btn btn-danger btn-xs" href="<?php echo base_url() . "index.php/payment/delete/" . $loop->id; ?>"><li class="fa fa-trash-o">Delete</li></a>
 

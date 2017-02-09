@@ -89,7 +89,6 @@ class Welcome extends CI_Controller {
 
     public function login() {
 
-
         $this->load->helper(array('form', 'url'));
         $email = $this->input->post('email');
         $password_now = $this->input->post('password');

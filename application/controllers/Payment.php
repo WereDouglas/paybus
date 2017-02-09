@@ -114,10 +114,9 @@ class Payment extends CI_Controller {
             if ($route != "") {
                 $busID = $this->Md->query_cell("SELECT * FROM bus WHERE routeID= '" . $this->input->post('routeID') . "' AND active ='true'", 'id');
                 $bus = $this->Md->query_cell("SELECT * FROM bus WHERE routeID= '" . $this->input->post('routeID') . "' AND active ='true'", 'regNo');
-                $p = array('name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $bus, 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $this->input->post('routeID'), 'busID' => $busID, 'created' => date('d-m-Y', strtotime($this->input->post('date'))));
+                $p = array('name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $bus, 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $this->input->post('routeID'), 'barcode' => $this->input->post('barcode'), 'busID' => $busID, 'created' => date('d-m-Y', strtotime($this->input->post('date'))));
                 $this->Md->save($p, 'payment');
             }
-
             if ($this->input->post('device') == "true") {
                 $b["info"] = "information saved !";
                 $b["status"] = "true";
@@ -127,6 +126,36 @@ class Payment extends CI_Controller {
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);
             redirect('payment/pay', 'refresh');
+        }
+    }
+
+    public function code() {
+        $this->load->helper(array('form', 'url'));
+        $code = $this->input->post('barcode');
+        // $route="1";
+        if ($code != "") {
+            $query = $this->Md->query("SELECT * FROM payment WHERE barcode LIKE '%$code%'");
+            if ($query) {
+
+                foreach ($query as $res) {              
+                       
+                        $b["info"] = "Data found";
+                        $b["status"] = "true";
+                        $b["name"] = $res->name;
+                        $b["contact"] = $res->contact;
+                        $b["cost"] = $res->cost;
+                        $b["bus"] = $res->bus;
+                        $b["seat"] = $res->seat;
+                        echo json_encode($b);
+                        return;
+                    
+                }
+            } else {
+                $b["info"] = "No such payment made!";
+                $b["status"] = "false";
+                echo json_encode($b);
+                return;
+            }
         }
     }
 
