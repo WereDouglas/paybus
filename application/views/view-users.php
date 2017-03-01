@@ -27,6 +27,7 @@
                                     <th>ID</th>
                                     <th>#</th>
                                     <th>Name</th>
+                                     <th>Role/Designation</th>
                                     <th>Company</th>
                                     <th>email</th>
                                     <th>Contact</th>
@@ -34,7 +35,7 @@
                                     <th class="hidden-phone">Created</th>
                                     <th class="hidden-phone">Action</th>
                                     <th class="hidden-phone">Reset password</th>
-                                     <th class="hidden-phone">Action</th>
+                                    <th class="hidden-phone">Action</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -64,7 +65,8 @@
                                             <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->name; ?>
                                             </td>
-
+                                            
+                                             <td ><?php echo $loop->role; ?></td>
                                             <td ><?php echo $loop->company; ?></td>
 
                                             <td id="email:<?php echo $loop->id; ?>" contenteditable="true">
@@ -86,7 +88,7 @@
                                                     </span>
                                                 </a>
                                             </td>
-                                             <td class="edit_td">
+                                            <td class="edit_td">
                                                 <a class="btn btn-danger btn-xs" href="<?php echo base_url() . "index.php/user/delete/" . $loop->id; ?>"><li class="fa fa-trash-o">Delete</li></a>
 
                                             </td> 
@@ -127,12 +129,28 @@
                             <div id="imagePreview" ></div>      
                         </div>
                     </div>
+                      <?php if(strpos( $this->session->userdata('permission') , 'admin' ) == true) {?>
                     <div class=" item form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">Select company</label>
                         <div class="col-md-6 col-sm-5 col-xs-12">
 
                             <input class="easyui-combobox form-control" name="companyID" id="companyID" style="width:100%;height:26px" data-options="
                                    url:'<?php echo base_url() ?>index.php/company/lists',
+                                   method:'get',
+                                   valueField:'id',
+                                   textField:'name',
+                                   multiple:false,
+                                   panelHeight:'auto'
+                                   ">
+                        </div>
+                    </div>
+                    <?php }?>
+                     <div class=" item form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Select role</label>
+                        <div class="col-md-6 col-sm-5 col-xs-12">
+
+                            <input class="easyui-combobox form-control" name="role" id="role" style="width:100%;height:26px" data-options="
+                                   url:'<?php echo base_url() ?>index.php/role/lists',
                                    method:'get',
                                    valueField:'id',
                                    textField:'name',
@@ -206,29 +224,29 @@
 <?php require_once(APPPATH . 'views/inner-js.php'); ?>
 <script src="<?= base_url(); ?>js/validator.js"></script>
 <script>
-                                                    $(document).ready(function () {
-                                                        $("#status").hide();
-                                                        $(function () {
-                                                            //acknowledgement message
-                                                            var message_status = $("#status");
-                                                            $("td[contenteditable=true]").blur(function () {
-                                                                var field_id = $(this).attr("id");
-                                                                var value = $(this).text();
-                                                                $.post('<?php echo base_url() . "index.php/user/update/"; ?>', field_id + "=" + value, function (data) {
-                                                                    if (data != '')
-                                                                    {
-                                                                        message_status.show();
-                                                                        message_status.text(data);
-                                                                        //hide the message
-                                                                        setTimeout(function () {
-                                                                            message_status.hide()
-                                                                        }, 4000);
-                                                                    }
-                                                                });
-                                                            });
-
+                                            $(document).ready(function () {
+                                                $("#status").hide();
+                                                $(function () {
+                                                    //acknowledgement message
+                                                    var message_status = $("#status");
+                                                    $("td[contenteditable=true]").blur(function () {
+                                                        var field_id = $(this).attr("id");
+                                                        var value = $(this).text();
+                                                        $.post('<?php echo base_url() . "index.php/user/update/"; ?>', field_id + "=" + value, function (data) {
+                                                            if (data != '')
+                                                            {
+                                                                message_status.show();
+                                                                message_status.text(data);
+                                                                //hide the message
+                                                                setTimeout(function () {
+                                                                    message_status.hide()
+                                                                }, 4000);
+                                                            }
                                                         });
                                                     });
+
+                                                });
+                                            });
 
 </script>
 <script type="text/javascript">

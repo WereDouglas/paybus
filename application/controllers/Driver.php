@@ -17,7 +17,7 @@ class Driver extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT *,company.name AS company,bus.regNo AS bus,driver.name AS name FROM driver LEFT JOIN company ON driver.companyID = company.id LEFT JOIN bus ON driver.busID = bus.id");
+        $query = $this->Md->query("SELECT *,company.name AS company,bus.regNo AS bus,driver.name AS name FROM driver LEFT JOIN company ON driver.companyID = company.id LEFT JOIN bus ON driver.busID = bus.id WHERE driver.companyID='".$this->session->userdata('companyID')."'");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {

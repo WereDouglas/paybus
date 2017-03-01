@@ -5,11 +5,11 @@
         <meta name="viewport" content="width=device-width, initial-scale=1.0" />
         <title>Pay bus</title>
         <!-- BOOTSTRAP STYLES-->
-        <link href="assets/css/bootstrap.css" rel="stylesheet" />
+        <link href="<?php echo base_url(); ?>assets/css/bootstrap.css" rel="stylesheet" />
         <!-- FONTAWESOME ICONS STYLES-->
-        <link href="assets/css/font-awesome.css" rel="stylesheet" />
+        <link href="<?php echo base_url(); ?>assets/css/font-awesome.css" rel="stylesheet" />
         <!--CUSTOM STYLES-->
-        <link href="assets/css/style.css?=new<?php echo date('d-m-Y'); ?>" rel="stylesheet" />
+        <link href="<?php echo base_url(); ?>assets/css/style.css?=new<?php echo date('d-m-Y'); ?>" rel="stylesheet" />
         <!-- HTML5 Shiv and Respond.js for IE8 support of HTML5 elements and media queries -->
         <!-- WARNING: Respond.js doesn't work if you view the page via file:// -->
         <!--[if lt IE 9]>
@@ -116,25 +116,25 @@
                         <li class="dropdown">
                             <a class="dropdown-toggle" data-toggle="dropdown" href="#">
                                 <i class="fa fa-user-plus"></i>  <i class="fa fa-caret-down"></i>
-                                
-                                <img src="images/temp.png" height="20px" width="20px" class="img-circle" />
+
+                                <img src="<?php echo base_url(); ?>uploads/<?php echo $this->session->userdata('image'); ?>" height="20px" width="20px" class="img-circle" />
                             </a>
                             <ul class="dropdown-menu dropdown-user">
                                 <li><a href="#"><i class="fa fa-user-plus"></i> My Profile</a>
                                 </li>
                                 <li class="divider"></li>
-                                <li><a href="#"><i class="fa fa-sign-out"></i> Logout</a>
+                                <li><a href="<?php echo base_url() . "index.php/welcome/logout"; ?>"><i class="fa fa-sign-out"></i> Logout</a>
                                 </li>
                             </ul>
-                            
+
                         </li>
-                         <li class="dropdown">
-                            
-                           <a target="frame" href="<?php echo base_url() . "index.php/payment/pay"; ?>">
-                              Make payment  
-                                <img src="images/cash.png" height="20px" width="20px" class="img-circle" />
+                        <li class="dropdown">
+
+                            <a target="frame" href="<?php echo base_url() . "index.php/payment/pay"; ?>">
+                                Make payment  
+                                <img src="<?php echo base_url(); ?>images/cash.png" height="20px" width="20px" class="img-circle" />
                             </a>
-                            
+
                         </li>
                     </ul>
 
@@ -150,12 +150,14 @@
                         </li>
 
                         <li>
-                            <a class="active-menu"  href="index.html"><i class="fa fa-dashboard "></i>Dashboard</a>
+                            <a class="active-menu"  target="frame" href="<?php echo base_url() . "index.php/welcome/start"; ?>"><i class="fa fa-dashboard "></i>Dashboard</a>
                         </li>
-                        <li>
-                            <a target="frame" href="<?php echo base_url() . "index.php/company/"; ?>"><i class="fa fa-connectdevelop"></i>Companies </a>
+                        <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                            <li>
+                                <a target="frame" href="<?php echo base_url() . "index.php/company/"; ?>"><i class="fa fa-connectdevelop"></i>Companies </a>
 
-                        </li>
+                            </li>
+                        <?php } ?>
                         <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/route/"; ?>"><i class="fa fa-road"></i>Routes </a>
 
@@ -169,14 +171,20 @@
                         <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/driver/"; ?>"><i class="fa fa-user "></i>Drivers</a>
                         </li>
-                         <li>
-                            <a target="frame" href="<?php echo base_url() . "index.php/user/"; ?>"><i class="fa fa-user "></i>System users</a>
-                        </li>
-
+                        <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                            <li>
+                                <a target="frame" href="<?php echo base_url() . "index.php/user/"; ?>"><i class="fa fa-user "></i>System users</a>
+                            </li>
+                        <?php } ?>
+                        <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                            <li>
+                                <a target="frame" href="<?php echo base_url() . "index.php/role/"; ?>"><i class="fa fa-user "></i>User roles</a>
+                            </li>
+                        <?php } ?>
                         <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/device/"; ?>"><i class="fa fa-barcode"></i>Devices</a>
                         </li>
-                         <li>
+                        <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/payment/"; ?>"><i class="fa fa-barcode"></i>Payments</a>
                         </li>
 

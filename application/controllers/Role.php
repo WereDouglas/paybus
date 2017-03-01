@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Route extends CI_Controller {
+class Role extends CI_Controller {
 
     function __construct() {
 
@@ -13,19 +13,18 @@ class Route extends CI_Controller {
         $this->load->library('encrypt');
         date_default_timezone_set('Africa/Kampala');
         $this->load->library('excel');
+        $this->load->library('email');
     }
 
     public function index() {
-
-        $query = $this->Md->query("SELECT * FROM route WHERE company='".$this->session->userdata('companyID')."'");
-        // $query = $this->Md->query("SELECT * FROM client  ");
-
+       
+        $query = $this->Md->query("SELECT * FROM roles");
         if ($query) {
-            $data['clients'] = $query;
+            $data['roles'] = $query;
         } else {
-            $data['clients'] = array();
+            $data['roles'] = array();
         }
-        $this->load->view('view-routes', $data);
+        $this->load->view('view-roles', $data);
     }
 
     public function GUID() {
@@ -37,19 +36,24 @@ class Route extends CI_Controller {
     }
 
     public function create() {
+
         $this->load->helper(array('form', 'url'));
         //user information
-        // $clientID = $this->GUID();
+        // $userID = $this->GUID();
         $name = $this->input->post('name');
+
         if ($name != "") {
-            $route = array('name' => $this->input->post('name'), 'startp' => $this->input->post('startp'), 'endp' => $this->input->post('endp'), 'company' => $this->session->userdata('companyID'), 'cost' => $this->input->post('cost'), 'startcoord' => $this->input->post('endcoord'), 'start_time' => $this->input->post('start_time'), 'end_time' => $this->input->post('end_time'), 'distance' => $this->input->post('distance'), 'created' => date('d-m-Y'));
-            $this->Md->save($route, 'route');
+            
+            $user = array('name' => $this->input->post('name'), 'actions' => $this->input->post('actions'));
+            $this->Md->save($user, 'roles');
+
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);
-            redirect('route', 'refresh');
+            redirect('role', 'refresh');
         }
     }
 
+   
     public function update() {
 
         $this->load->helper(array('form', 'url'));
@@ -68,7 +72,7 @@ class Route extends CI_Controller {
                     //update the values
                     $task = array($field_name => $val);
                     // $this->Md->update($user_id, $task, 'tasks');
-                    $this->Md->update_dynamic($user_id, 'id', 'route', $task);
+                    $this->Md->update_dynamic($user_id, 'id', 'roles', $task);
                     echo "Updated";
                 } else {
                     echo "Invalid Requests";
@@ -79,47 +83,20 @@ class Route extends CI_Controller {
         }
     }
 
+    
     public function lists() {
-        $query = $this->Md->query("SELECT * FROM route");
-        //$query = $this->Md->query("SELECT * FROM client");
+        //  $query = $this->Md->query("SELECT * FROM client WHERE  orgID='" . $this->session->userdata('orgID') . "'");
+        $query = $this->Md->query("SELECT * FROM roles");
         echo json_encode($query);
-    }
-
-    public function arraylist() {
-        //$query = $this->Md->query("SELECT * FROM route");
-        //$query = $this->Md->query("SELECT * FROM client");
-
-        $query = $this->Md->query("SELECT * FROM route ");
-        if ($query) {
-            $routes = array();
-            $r = array();
-
-            foreach ($query as $res) {
-
-                $b["id"] = $res->id;
-                $b["name"] = $res->name;
-                $b["cost"] = $res->cost;
-                $b["start"] = $res->startp;
-                $b["stop"] = $res->endp;
-                $b["distance"] = $res->distance;
-                
-                $b["start_time"] = $res->start_time;
-                $b["end_time"] = $res->end_time;
-
-                $routes[] = $b;
-            }
-            $r["routes"] = $routes;
-            echo json_encode($r);
-        }
     }
 
     public function delete() {
 
         $this->load->helper(array('form', 'url'));
         $id = urldecode($this->uri->segment(3));
-
-        $query = $this->Md->cascade($id, 'route', 'id');
-
+        $query = $this->Md->delete($id, 'role');
+        //cascade($id,$table,$field)
+        //$query = $this->Md->cascade($id, 'user', 'id');
         if ($this->db->affected_rows() > 0) {
 
             $this->session->set_flashdata('msg', '<div class="alert alert-error">
@@ -127,8 +104,20 @@ class Route extends CI_Controller {
                                                 <strong>
                                                 Information deleted	</strong>									
 						</div>');
-            redirect('route', 'refresh');
+            redirect('role', 'refresh');
         }
     }
 
+    public function generateRandomString($length = 6) {
+        $characters = '0123456789abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+        $charactersLength = strlen($characters);
+        $randomString = '';
+        for ($i = 0; $i < $length; $i++) {
+            $randomString .= $characters[rand(0, $charactersLength - 1)];
+        }
+        return $randomString;
+    }
+
 }
+
+?>

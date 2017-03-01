@@ -18,7 +18,7 @@ class User extends CI_Controller {
 
     public function index() {
         //  $query = $this->Md->query("SELECT * FROM client where org = '" . $this->session->userdata('orgID') . "' ");
-        $query = $this->Md->query("SELECT *,user.id AS id ,company.name AS company,user.name AS name FROM user LEFT JOIN company ON user.company = company.id");
+        $query = $this->Md->query("SELECT *,user.id AS id ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role WHERE user.company='".$this->session->userdata('companyID')."'");
 
         if ($query) {
             $data['users'] = $query;
@@ -58,7 +58,7 @@ class User extends CI_Controller {
             }
             $data = $this->upload->data();
             $userfile = $data['file_name'];
-            $user = array('name' => $this->input->post('name'), 'company' => $this->input->post('companyID'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
+            $user = array('name' => $this->input->post('name'),'role' => $this->input->post('role'), 'company' => $this->session->userdata('companyID'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
             $this->Md->save($user, 'user');
 
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';

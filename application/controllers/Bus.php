@@ -17,7 +17,7 @@ class Bus extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT *,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id");
+        $query = $this->Md->query("SELECT *,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id WHERE bus.companyID='".$this->session->userdata('companyID')."'");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {

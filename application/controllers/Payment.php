@@ -17,7 +17,7 @@ class Payment extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS date FROM payment LEFT JOIN route ON payment.routeID = route.id");
+        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON payment.routeID = route.id WHERE payment.companyID ='".$this->session->userdata('companyID')."'");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -114,7 +114,7 @@ class Payment extends CI_Controller {
             if ($route != "") {
                 $busID = $this->Md->query_cell("SELECT * FROM bus WHERE routeID= '" . $this->input->post('routeID') . "' AND active ='true'", 'id');
                 $bus = $this->Md->query_cell("SELECT * FROM bus WHERE routeID= '" . $this->input->post('routeID') . "' AND active ='true'", 'regNo');
-                $p = array('name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $bus, 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $this->input->post('routeID'), 'barcode' => $this->input->post('barcode'), 'busID' => $busID, 'created' => date('d-m-Y', strtotime($this->input->post('date'))));
+                $p = array('name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $bus, 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $this->input->post('routeID'), 'barcode' => $this->input->post('barcode'), 'companyID' => $this->input->post('companyID'), 'busID' => $busID, 'date' => date('d-m-Y', strtotime($this->input->post('date'))),'created' => date('d-m-Y'));
                 $this->Md->save($p, 'payment');
             }
             if ($this->input->post('device') == "true") {

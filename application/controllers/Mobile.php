@@ -38,18 +38,18 @@ class Mobile extends CI_Controller {
 
         $this->load->helper(array('form', 'url'));
 
-         $contact = $this->input->post('contact');
-         $password = $this->input->post('password');
+        $contact = $this->input->post('contact');
+        $password = $this->input->post('password');
         //$contact = '0782481746';
-       // $password = '1234562';
+        // $password = '1234562';
 
-       
-         $query = $this->Md->query("SELECT * FROM user WHERE contact='".$contact."'");
 
-       
-        if ( $query ) {
+        $query = $this->Md->query("SELECT * FROM user WHERE contact='" . $contact . "'");
 
-            foreach ( $query  as $res) {
+
+        if ($query) {
+
+            foreach ($query as $res) {
 
                 if ($res->password == md5($password)) {
                     if ($res->active != 'true') {
@@ -63,6 +63,7 @@ class Mobile extends CI_Controller {
                     $b["name"] = $res->name;
                     $b["email"] = $res->email;
                     $b["image"] = $res->image;
+                    $b["companyID"] = $res->company;
                     $b["userID"] = $res->id;
                     $b["contact"] = $res->name;
 
