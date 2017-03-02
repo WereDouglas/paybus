@@ -17,7 +17,7 @@ class Payment extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON payment.routeID = route.id WHERE payment.companyID ='".$this->session->userdata('companyID')."'");
+        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON payment.routeID = route.id WHERE payment.companyID ='" . $this->session->userdata('companyID') . "'");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -26,6 +26,141 @@ class Payment extends CI_Controller {
             $data['clients'] = array();
         }
         $this->load->view('view-payments', $data);
+    }
+
+    public function daily() {
+
+        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON payment.routeID = route.id WHERE payment.companyID ='" . $this->session->userdata('companyID') . "'");
+        // $query = $this->Md->query("SELECT * FROM client  ");
+
+        if ($query) {
+            $data['clients'] = $query;
+        } else {
+            $data['clients'] = array();
+        }
+        $this->load->view('view-daily', $data);
+    }
+
+    public function monthly() {
+
+        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON payment.routeID = route.id WHERE payment.companyID ='" . $this->session->userdata('companyID') . "'");
+        // $query = $this->Md->query("SELECT * FROM client  ");
+
+        if ($query) {
+            $data['clients'] = $query;
+        } else {
+            $data['clients'] = array();
+        }
+        $this->load->view('view-payments', $data);
+    }
+
+    public function daily_report() {
+
+        $this->load->helper(array('form', 'url'));
+
+        $date = trim($this->input->post('date'));
+        $months = trim($this->input->post('month'));
+        $years = trim($this->input->post('year'));
+        unset($sql);
+        if ($date) {
+            $sql[] = "DAY(STR_TO_DATE(date,'%d-%m-%Y')) = '$date' ";
+        }
+        if ($months) {
+            $sql[] = "MONTH(STR_TO_DATE(date,'%d-%m-%Y')) = '$months' ";
+        }
+        if ($years) {
+            $sql[] = "YEAR(STR_TO_DATE(date,'%d-%m-%Y')) = '$years' ";
+        }
+        $query = "SELECT * FROM payment";
+        if (!empty($sql)) {
+            $query .= ' WHERE ' . implode(' AND ', $sql);
+        }
+
+        $dailys = $this->Md->query($query);
+        //var_dump($daily);
+        if ($dailys) {
+
+            echo ' <table  class="display table table-bordered table-striped" id="dynamic-table">
+                            <thead>
+                                <tr>
+                                    <th>#</th>
+                                    <th>Created on</th>
+                                    <th>Contact</th>
+                                    <th>Name</th>
+                                    <th>E-mail</th>
+                                    <th class="hidden-phone">Bus</th>
+                                    <th class="hidden-phone">Seat</th>
+                                    <th>Date/Time of travel</th>
+                                    <th class="hidden-phone">Cost</th>                                   
+                                    <th class="hidden-phone">Route</th>
+                                    <th class="hidden-phone">Bar code</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+            //var_dump($dailys);
+            $sum = "0";
+            if (is_array($dailys) && count($dailys)) {
+                foreach ($dailys as $loop) {
+
+
+
+                    echo '       <tr class="odd">
+                                            <td>
+                                                ' . $loop->id . '
+                                            </td>
+                                            <td>
+                                                 ' . $loop->created . '
+                                            </td>
+                                            <td> ' . $loop->contact . '
+                                            </td>
+                                            <td >
+                                                 ' . $loop->name . '
+                                            </td>
+
+                                            <td > ' . $loop->email . '</td>
+                                            <td> ' . $loop->bus . '
+                                            </td>
+                                            <td> ' . $loop->seat . '
+                                            </td>
+                                            <td> ' . $loop->date . ' ' . $loop->start . '
+                                            </td>
+                                            <td > ' . number_format($loop->cost) . '</td>
+                                            <td > ' . $loop->route . '</td> 
+                                            <td > ' . $loop->barcode . '</td> 
+                                            
+
+                                        </tr>';
+                    $sum = $sum + $loop->cost;
+                }
+            }
+
+            echo '       <tr class="odd">
+                                            <td>
+                                               
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td >
+                                                
+                                            </td>
+
+                                            <td ></td>
+                                            <td>  </td>
+                                            <td> </td>
+                                            <td>TOTAL </td>
+                                            <td > ' . number_format($sum) . '</td>
+                                            <td > </td> 
+                                            <td > </td> 
+                                            
+
+                                        </tr>';
+            echo '    </tbody>
+
+                        </table>';
+        }
     }
 
     public function pay() {
@@ -114,7 +249,7 @@ class Payment extends CI_Controller {
             if ($route != "") {
                 $busID = $this->Md->query_cell("SELECT * FROM bus WHERE routeID= '" . $this->input->post('routeID') . "' AND active ='true'", 'id');
                 $bus = $this->Md->query_cell("SELECT * FROM bus WHERE routeID= '" . $this->input->post('routeID') . "' AND active ='true'", 'regNo');
-                $p = array('name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $bus, 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $this->input->post('routeID'), 'barcode' => $this->input->post('barcode'), 'companyID' => $this->input->post('companyID'), 'busID' => $busID, 'date' => date('d-m-Y', strtotime($this->input->post('date'))),'created' => date('d-m-Y'));
+                $p = array('name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $bus, 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $this->input->post('routeID'), 'barcode' => $this->input->post('barcode'), 'companyID' => $this->input->post('companyID'), 'busID' => $busID, 'date' => date('d-m-Y', strtotime($this->input->post('date'))), 'created' => date('d-m-Y'));
                 $this->Md->save($p, 'payment');
             }
             if ($this->input->post('device') == "true") {
@@ -137,18 +272,17 @@ class Payment extends CI_Controller {
             $query = $this->Md->query("SELECT * FROM payment WHERE barcode LIKE '%$code%'");
             if ($query) {
 
-                foreach ($query as $res) {              
-                       
-                        $b["info"] = "Data found";
-                        $b["status"] = "true";
-                        $b["name"] = $res->name;
-                        $b["contact"] = $res->contact;
-                        $b["cost"] = $res->cost;
-                        $b["bus"] = $res->bus;
-                        $b["seat"] = $res->seat;
-                        echo json_encode($b);
-                        return;
-                    
+                foreach ($query as $res) {
+
+                    $b["info"] = "Data found";
+                    $b["status"] = "true";
+                    $b["name"] = $res->name;
+                    $b["contact"] = $res->contact;
+                    $b["cost"] = $res->cost;
+                    $b["bus"] = $res->bus;
+                    $b["seat"] = $res->seat;
+                    echo json_encode($b);
+                    return;
                 }
             } else {
                 $b["info"] = "No such payment made!";

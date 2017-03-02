@@ -28,7 +28,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a  class="navbar-brand" href="index.html"><img alt="avatar" height="50px" width="50px" src="<?= base_url(); ?>images/paybus.png">
+                    <a  class="navbar-brand" href="index.html"><img alt="avatar" height="50px" width="150px" src="<?= base_url(); ?>images/paybus.jpeg">
 
                     </a>
                 </div>
@@ -169,7 +169,7 @@
                         </li>
 
                         <li>
-                            <a target="frame" href="<?php echo base_url() . "index.php/driver/"; ?>"><i class="fa fa-user "></i>Drivers</a>
+                            <a target="frame" href="<?php echo base_url() . "index.php/driver/"; ?>"><i class="fa fa-area-chart"></i>Drivers</a>
                         </li>
                         <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
                             <li>
@@ -182,10 +182,26 @@
                             </li>
                         <?php } ?>
                         <li>
-                            <a target="frame" href="<?php echo base_url() . "index.php/device/"; ?>"><i class="fa fa-barcode"></i>Devices</a>
+                            <a target="frame" href="<?php echo base_url() . "index.php/device/"; ?>"><i class="fa fa-arrow-circle-o-up"></i>Devices</a>
                         </li>
                         <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/payment/"; ?>"><i class="fa fa-barcode"></i>Payments</a>
+                        </li>
+
+                        <li class="dropdown">
+                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                <i class="fa fa-area-chart"></i>  <i class="fa fa-caret-down"></i>
+                                Reports
+                            </a>
+                            <ul class="dropdown-menu dropdown-user">
+                                <li><a target="frame" href="<?php echo base_url() . "index.php/payment/daily"; ?>"><i class="fa fa-calendar"></i>  Daily</a>
+                                </li>
+                                <li class="divider"></li>
+                                <li><a target="frame" href="<?php echo base_url() . "index.php/payment/monthly"; ?>"><i class="fa fa-area-chart"></i> Monthly</a>
+                                </li>
+
+                            </ul>
+
                         </li>
 
 

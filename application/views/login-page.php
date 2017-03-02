@@ -37,7 +37,7 @@
 
                     <div class="panel panel-default">
                         <div class="panel-body ">
-                            <img alt="avatar" class="center-block" height="80px" width="90px" src="<?= base_url(); ?>images/paybus.png">
+                            <img alt="avatar" class="center-block" height="80px" width="290px" src="<?= base_url(); ?>images/paybus.jpeg">
 
                             <div class="form-group">
                                 <form id="station-form" class="form-login" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/welcome/login'  method="post">

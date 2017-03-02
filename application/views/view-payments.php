@@ -3,7 +3,7 @@
 <style>
     body {
         font-family: "Open Sans", "Helvetica Neue", Helvetica, Arial, sans-serif;
-        font-size: 13px;
+        font-size: 8px;
         background-color:#FFFFFF;
     }   
 
@@ -12,12 +12,16 @@
     <div class="row">
         <div class="col-md-12">
             <div class="block-web">
+
+
                 <div class="header">
-                    <div class="actions"> <a class="minimize" href="#"><i class="fa fa-chevron-down"></i></a> <a class="refresh" href="#"><i class="fa fa-repeat"></i></a> <a class="close-down" href="#"><i class="fa fa-times"></i></a> </div>
-                       <h3 class="content-header">Payments</h3>
-                    <?php echo $this->session->flashdata('msg'); ?>
+                    <div class="actions"> <a class="btn btn-grey col-md-1" id="excel" >Export</a></div>
+                    <h3 class="content-header">Payments</h3>
+
+
                 </div>
                 <div class="alert alert-info" id="status"></div>
+                <?php echo $this->session->flashdata('msg'); ?>
                 <div class="porlets-content">
 
 
@@ -27,7 +31,7 @@
                                 <tr>
                                     <th>#</th>
                                     <th>Created on</th>
-                                     <th>Contact</th>
+                                    <th>Contact</th>
                                     <th>Name</th>
                                     <th>E-mail</th>
                                     <th class="hidden-phone">Bus</th>
@@ -35,7 +39,7 @@
                                     <th>Date/Time of travel</th>
                                     <th class="hidden-phone">Cost</th>                                   
                                     <th class="hidden-phone">Route</th>
-                                     <th class="hidden-phone">Bar code</th> 
+                                    <th class="hidden-phone">Bar code</th> 
                                     <th class="hidden-phone">Actions</th>
 
                                 </tr>
@@ -53,7 +57,7 @@
                                             <td>
                                                 <?php echo $loop->created; ?>
                                             </td>
-                                             <td id="contact:<?php echo $loop->id; ?>" contenteditable="true">
+                                            <td id="contact:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->contact; ?>
                                             </td>
                                             <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
@@ -68,11 +72,11 @@
                                                 <?php echo $loop->seat; ?>
                                             </td>
                                             <td id="date:<?php echo $loop->id; ?>" contenteditable="true">
-                                                <?php echo $loop->date.' '.$loop->start; ?>
+                                                <?php echo $loop->date . ' ' . $loop->start; ?>
                                             </td>
                                             <td ><?php echo number_format($loop->cost); ?></td>
-                                              <td ><?php echo $loop->route; ?></td> 
-                                               <td ><?php echo $loop->barcode; ?></td> 
+                                            <td ><?php echo $loop->route; ?></td> 
+                                            <td ><?php echo $loop->barcode; ?></td> 
                                             <td class="edit_td">
                                                 <a class="btn btn-danger btn-xs" href="<?php echo base_url() . "index.php/payment/delete/" . $loop->id; ?>"><li class="fa fa-trash-o">Delete</li></a>
 
@@ -98,6 +102,7 @@
 
 <!-- /sidebar chats -->  
 <?php require_once(APPPATH . 'views/inner-js.php'); ?>
+<script src="<?= base_url(); ?>js/table2excel.js"></script>
 <script>
     $(document).ready(function () {
         $("#status").hide();
@@ -121,6 +126,17 @@
             });
 
         });
+          var table = $('#dynamic-table').DataTable();
+  
+        $('#excel').on('click', function () {
+            $('<table>').append(table.$('tr').clone()).table2excel({
+                exclude: ".excludeThisClass",
+                name: "Worksheet Name",
+                filename: "SomeFile" //do not include extension
+            });
+        });
     });
 
+
 </script>
+
