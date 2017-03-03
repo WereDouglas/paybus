@@ -80,7 +80,7 @@ class Payment extends CI_Controller {
         //var_dump($daily);
         if ($dailys) {
 
-            echo ' <table  class="display table table-bordered table-striped" id="dynamic-table">
+            echo ' <table  class="display table table-bordered table-striped" id="dynamic-table" style="font-size: 12px;">
                             <thead>
                                 <tr>
                                     <th>#</th>

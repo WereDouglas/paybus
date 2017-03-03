@@ -52,8 +52,7 @@
                         <div class="col-md-6" style="margin-top:35px;">
                             <button type="button" class="btn btn-info btn-small" id="generate" >generate</button>
                             <input type="button" class="btn btn-info btn-small" onclick="ExportToExcel('datatable')" value="Export to Excel">
-                            <input type="button" class="btn btn-info btn-small" onclick="printDiv('printableArea')" value="print" />
-                            <input type="button" id="excel" class="btn btn-info btn-small"  value="Excel" />
+                             <input type="button" id="excel" class="btn btn-info btn-small"  value="Excel" />
 
 
                         </div>
