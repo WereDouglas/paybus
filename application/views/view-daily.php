@@ -11,56 +11,71 @@
 <div class="page-content">
     <div class="row">
         <div class="col-md-12">          
-                <section>
-                    <?php $months = array(1 => "January", 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June", 7 => "July", 8 => "August", 9 => "September", 10 => "October", 11 => "November", 12 => "December"); ?>
-                    <div class="row">
-                          <div class="col-md-2">
-                            <div class=" form-group">
-                                <label>Day</label>
-                                <select class="form-control"  name="date" id="date" >
-                                    <option value=""></option>
-                                    <?php
-                                    for ($m = 1; $m <= 32; $m++)
-                                        echo "<option value='$m'>" . $m . "</option>"
-                                        ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class=" form-group">
-                                <label>Month</label>
-                                <select class="form-control"  name="month" id="month" >
-                                    <option value=""></option>
-                                    <?php
-                                    for ($m = 1; $m <= 12; $m++)
-                                        echo "<option value='$m'>" . $months[$m] . "</option>"
-                                        ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-2">
-                            <div class=" form-group">
-                                <label>Year</label>
-                                <select class="form-control" name="year" id="year" >
-                                    <?php
-                                    for ($y = date('Y'); $y >= 1902; $y--)
-                                        echo "<option value='$y'>$y</option>"
-                                        ?>
-                                </select>
-                            </div>
-                        </div>
-                        <div class="col-md-6" style="margin-top:35px;">
-                            <button type="button" class="btn btn-info btn-small" id="generate" >generate</button>
-                            <input type="button" class="btn btn-info btn-small" onclick="ExportToExcel('datatable')" value="Export to Excel">
-                             <input type="button" id="excel" class="btn btn-info btn-small"  value="Excel" />
+            <section>
 
-
+                <?php $months = array(1 => "January", 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June", 7 => "July", 8 => "August", 9 => "September", 10 => "October", 11 => "November", 12 => "December"); ?>
+                <div class="row">
+                    <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                        <div class="col-md-3" style="margin-top:3px;">
+                            <label>Company</label>
+                            <div class=" form-group">
+                                <input class="easyui-combobox form-control" name="companyID" id="companyID"  data-options="
+                                       url:'<?php echo base_url() ?>index.php/company/lists',
+                                       method:'get',
+                                       valueField:'id',
+                                       textField:'name',
+                                       multiple:false,
+                                       panelHeight:'auto'
+                                       ">
+                            </div>
+                        </div>
+                    <?php } ?>
+                    <div class="col-md-3">
+                        <div class=" form-group">
+                            <label>Day</label>
+                            <select class="form-control"  name="date" id="date" >
+                                <option value=""></option>
+                                <?php
+                                for ($m = 1; $m <= 32; $m++)
+                                    echo "<option value='$m'>" . $m . "</option>"
+                                    ?>
+                            </select>
                         </div>
                     </div>
+                    <div class="col-md-3">
+                        <div class=" form-group">
+                            <label>Month</label>
+                            <select class="form-control"  name="month" id="month" >
+                                <option value=""></option>
+                                <?php
+                                for ($m = 1; $m <= 12; $m++)
+                                    echo "<option value='$m'>" . $months[$m] . "</option>"
+                                    ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class=" form-group">
+                            <label>Year</label>
+                            <select class="form-control" name="year" id="year" >
+                                <?php
+                                for ($y = date('Y'); $y >= 1902; $y--)
+                                    echo "<option value='$y'>$y</option>"
+                                    ?>
+                            </select>
+                        </div>
+                    </div>
+                    <div class="col-md-12" style="margin-top:5px;">
+                        <button type="button" class="btn btn-info btn-small" id="generate" >generate</button>
+                        <input type="button" name="exportExcel" id="exportExcel" onclick="ExportToExcel('dynamic-table')" value="Export to Excel">
+                        <input type="button" class="btn btn-default  printdiv-btn btn-primary icon-ok" value="print" />
+
+                    </div>
+                </div>
 
 
-                </section>
-        
+            </section>
+
             <h3 class="content-header"><font class="blue">Daily reports</font></h3>
             <div class="table-responsive scroll">
                 <span id="loading_card" name ="loading_card"><img src="<?= base_url(); ?>images/loading.gif" alt="loading............" /></span>
@@ -77,21 +92,21 @@
 <script src="<?= base_url(); ?>js/table2excel.js"></script>
 
 <script type="text/javascript">
-                                function ExportToExcel(datatable) {
-                                    var htmltable = document.getElementById('card');
-                                    var html = htmltable.outerHTML;
-                                    window.open('data:application/vnd.ms-excel,' + encodeURIComponent(html));
-                                }
-                                function printDiv(divName) {
-                                    var printContents = document.getElementById(divName).innerHTML;
-                                    var originalContents = document.body.innerHTML;
+                            function ExportToExcel(datatable) {
+                                var month = $("#month").val();
+                                var year = $("#year").val();
+                                var date = $("#date").val();
+                                var companyID = $("input[name=companyID]").val();
 
-                                    document.body.innerHTML = printContents;
+                                var htmltable = document.getElementById('dynamic-table');
+                                var html = htmltable.outerHTML;
+                                window.open('data:application/vnd.ms-excel,' + ';filename=' + month + ' ' + year + '.xlsx;' + encodeURIComponent(html));
+                                var result = "data:application/vnd.ms-excel,";
+                                this.href = result;
+                                this.download = month + ".xls";
+                                return true;
+                            }
 
-                                    window.print();
-
-                                    document.body.innerHTML = originalContents;
-                                }
 
 </script>
 
@@ -108,11 +123,12 @@
 
             var month = $("#month").val();
             var year = $("#year").val();
-             var date = $("#date").val();
+            var date = $("#date").val();
+            var companyID = $("input[name=companyID]").val();
 
             if (year.length > 0) {
 
-                $.post("<?php echo base_url() ?>index.php/payment/daily_report", {month: month, year: year,date:date}
+                $.post("<?php echo base_url() ?>index.php/payment/daily_report", {month: month, year: year, date: date, companyID: companyID}
                 , function (response) {
                     //#emailInfo is a span which will show you message
 
@@ -138,7 +154,19 @@
 
 
     });
+    $(document).on('click', '.printdiv-btn', function (e) {
+        e.preventDefault();
 
+        printData();
+    });
+    function printData()
+    {
+        var divToPrint = document.getElementById("dynamic-table");
+        newWin = window.open("");
+        newWin.document.write(divToPrint.outerHTML);
+        newWin.print();
+        newWin.close();
+    }
 
 
 </script>

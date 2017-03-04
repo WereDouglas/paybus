@@ -8,62 +8,73 @@
     }   
 
 </style>
-<div class="page-content">
+ <style>
+
+            .panel-default {
+                border-color: #58C68A;
+            }
+        </style>
+<div class="page-content ">
     <div class="row">
         <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/payment/create'  method="post">
-            <div class="col-sm-5 col-md-6" >
-                <div  id="printableArea" >
+            <div class="col-sm-6 col-md-6  " style=" padding-left:15%; padding-top: 5%; border: 1px;border-color: #58C68A; " >
+                <div  id="printableArea" class="">
+                      <img alt="avatar" class="center-block" height="80px" width="290px" src="<?= base_url(); ?>images/paybus.png">
 
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12">Select route</label>
+                    <h4>RECEIPT</h4>
                     <div class="form-group">
+                        <label >Select route</label>
 
-                        <div class="col-md-6 col-sm-5 col-xs-12">
-                            <input class="easyui-combobox form-control" name="routeID" id="routeID" style="width:100%;height:26px" data-options="
-                                   url:'<?php echo base_url() ?>index.php/route/lists',
-                                   method:'get',
-                                   valueField:'id',
-                                   textField:'name',
-                                   multiple:false,
-                                   panelHeight:'auto'
-                                   ">
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-10">
+                        <input class="easyui-combobox form-control" name="routeID" id="routeID" style="width:100%;height:26px" data-options="
+                               url:'<?php echo base_url() ?>index.php/route/lists',
+                               method:'get',
+                               valueField:'id',
+                               textField:'name',
+                               multiple:false,
+                               panelHeight:'auto',
+                               onChange: function(rec){
+                               SelectedRole('info');
+                               }
+                               ">
 
-                            <span class="col-sm-3"> Date:</span> <span class="col-sm-9">   <input class="easyui-datebox" name="date" id="date" value="<?php echo date('d-m-Y'); ?>"/></span>  
+                    </div>
+                      <div class="form-group">
 
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-10">
-                            <input type="text" name="name" id="name" placeholder="Passenger name"  class="form-control"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-10">
-                            <input type="text" name="contact" id="contact" placeholder="Contact No."  class="form-control"/>
-                        </div>
-                    </div>
+                        <span id="loading"  name ="loading"><img src="<?= base_url(); ?>images/loading.gif" alt="loading......" /></span>                                   
+
+                    </div> 
                     <div class="form-group">
 
-                        <div class="col-sm-10">
-                            <input type="text" name="email" placeholder="Email" id="email"  class="form-control"/>
-                        </div>
+
+                        <label > Date:</label> 
+                        <input class="easyui-datebox form-control" name="date" id="date" value="<?php echo date('d-m-Y'); ?>"/>
+
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-10">
-                            <span id="loading"  name ="loading"><img src="<?= base_url(); ?>images/loading.gif" alt="loading......" /></span>                                   
-                        </div>
-                    </div>                       
+
+                        <input type="text" name="name" id="name" placeholder="Passenger name"  class="form-control"/>
+
+                    </div>
+                    <div class="form-group">
+
+                        <input type="text" name="contact" id="contact" placeholder="Contact No."  class="form-control"/>
+
+                    </div>
+                    <div class="form-group">
+
+                        <input type="text" name="email" placeholder="Email" id="email"  class="form-control"/>
+
+                    </div>
+                  
+                    <div class="form-group">
+                        <button class="btn btn-default" type="submit">SUBMIT</button>
+                        <input type="button" class="btn btn-default  printdiv-btn btn-primary icon-ok" value="print" />
+
+
+                    </div>
                 </div>
             </div>
-            <div class="form-group">
-                <button class="btn btn-default" type="submit">SUBMIT</button>
-                <input type="button" class="btn btn-default  printdiv-btn btn-primary icon-ok" value="print" />
 
-
-            </div>
     </div>
 
 </form>
@@ -81,11 +92,50 @@
 
         var payment = 0;
 
-        $('#contact').blur(function () {
+//        $('#contact').blur(function () {
+//
+//            //$("#tenantname").val($("input[name=tenant]").val());
+//            // $("#dater").val($("input[name=date]").val());
+//            payment = parseInt($("#sum").val());
+//            $("#words").val(toWords(payment));
+//            var routeID = $("input[name=routeID]").val();
+//            var date = $("input[name=date]").val();
+//            if (routeID !== null) {           // show loader 
+//                $('#loading').show();
+//                $.post("<?php echo base_url() ?>index.php/payment/details", {
+//                    routeID: routeID, date: date
+//                }, function (response) {
+//                    //#emailInfo is a span which will show you message
+//                    $('#loading').hide();
+//                    setTimeout(finishAjax('loading', escape(response)), 400);
+//                });
+//            }
+//
+//            function finishAjax(id, response) {
+//                $('#' + id).html(unescape(response));
+//                $('#' + id).fadeIn();
+//            }
+//        });
 
-            //$("#tenantname").val($("input[name=tenant]").val());
-            // $("#dater").val($("input[name=date]").val());
-            payment = parseInt($("#sum").val());
+
+    });
+
+    $(document).on('click', '.printdiv-btn', function (e) {
+        e.preventDefault();
+
+        var $this = $(this);
+        //  var originalContent = $('body').html();
+        var printArea = $this.parents('.printableArea').html();
+
+        $('body').html(printArea);
+        window.print();
+        $('body').html(printArea);
+    });
+    
+     function SelectedRole(ele) {
+         var payment = 0;
+         
+           payment = parseInt($("#sum").val());
             $("#words").val(toWords(payment));
             var routeID = $("input[name=routeID]").val();
             var date = $("input[name=date]").val();
@@ -104,22 +154,7 @@
                 $('#' + id).html(unescape(response));
                 $('#' + id).fadeIn();
             }
-        });
-
-
-    });
-
-    $(document).on('click', '.printdiv-btn', function (e) {
-        e.preventDefault();
-
-        var $this = $(this);
-        //  var originalContent = $('body').html();
-        var printArea = $this.parents('.printableArea').html();
-
-        $('body').html(printArea);
-        window.print();
-        $('body').html(printArea);
-    });
+    }
 
 
 </script>

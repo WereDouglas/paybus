@@ -38,13 +38,13 @@ class Mobile extends CI_Controller {
 
         $this->load->helper(array('form', 'url'));
 
-        $contact = $this->input->post('contact');
+       $contact = $this->input->post('contact');
         $password = $this->input->post('password');
         //$contact = '0782481746';
-        // $password = '1234562';
+         //$password = '1234562';
 
 
-        $query = $this->Md->query("SELECT * FROM user WHERE contact='" . $contact . "'");
+        $query = $this->Md->query("SELECT *,user.name AS name,company.name AS company,user.id AS id,company.id AS companyID,user.image AS image,company.image AS logo FROM user LEFT JOIN company ON company.id = user.company WHERE user.contact='" . $contact . "'");
 
 
         if ($query) {
@@ -63,7 +63,9 @@ class Mobile extends CI_Controller {
                     $b["name"] = $res->name;
                     $b["email"] = $res->email;
                     $b["image"] = $res->image;
-                    $b["companyID"] = $res->company;
+                    $b["logo"] = $res->logo;
+                    $b["companyID"] = $res->companyID;
+                    $b["company"] = $res->company;
                     $b["userID"] = $res->id;
                     $b["contact"] = $res->name;
 

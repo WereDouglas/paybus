@@ -18,12 +18,20 @@ class User extends CI_Controller {
 
     public function index() {
         //  $query = $this->Md->query("SELECT * FROM client where org = '" . $this->session->userdata('orgID') . "' ");
-        $query = $this->Md->query("SELECT *,user.id AS id ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role WHERE user.company='".$this->session->userdata('companyID')."'");
 
+        if (strpos($this->session->userdata('permission'), 'admin') == true) {
+            $query = $this->Md->query("SELECT *,user.id AS id ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role");
+        } else {
+            $query = $this->Md->query("SELECT *,user.id AS id ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role WHERE user.company='" . $this->session->userdata('companyID') . "'");
+        }
         if ($query) {
             $data['users'] = $query;
         } else {
             $data['users'] = array();
+        }
+        $query = $this->Md->query("SELECT * FROM roles");
+        if ($query) {
+            $data['roles'] = $query;
         }
         $this->load->view('view-users', $data);
     }
@@ -42,6 +50,15 @@ class User extends CI_Controller {
         //user information
         // $userID = $this->GUID();
         $name = $this->input->post('name');
+        $query = $this->Md->query("SELECT * FROM user WHERE contact='" . $this->input->post('contact') . "'");
+
+        if (count($query) > 0) {
+
+            $status .= '<div class="alert alert-success">  <strong>User contact already registered</strong></div>';
+            $this->session->set_flashdata('msg', $status);
+            redirect('user', 'refresh');
+            return;
+        }
 
         if ($name != "") {
             ///organisation image uploads
@@ -56,9 +73,17 @@ class User extends CI_Controller {
                 $msg = $this->upload->display_errors('', '');
                 $status .= '<div class="alert alert-error"> <strong>' . $msg . '</strong></div>';
             }
+            if (strpos($this->session->userdata('permission'), 'admin') == true) {
+
+                $companyID = $this->input->post('companyID');
+            } else {
+
+                $companyID = $this->session->userdata('companyID');
+            }
+
             $data = $this->upload->data();
             $userfile = $data['file_name'];
-            $user = array('name' => $this->input->post('name'),'role' => $this->input->post('role'), 'company' => $this->session->userdata('companyID'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
+            $user = array('name' => $this->input->post('name'), 'role' => $this->input->post('role'), 'company' => $companyID, 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
             $this->Md->save($user, 'user');
 
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
@@ -109,6 +134,15 @@ class User extends CI_Controller {
         } else {
             echo "Invalid Requests";
         }
+    }
+
+    public function updating() {
+
+        $this->load->helper(array('form', 'url'));
+        $id = $this->input->post('id');
+        $role = $this->input->post('role');
+        $user = array('role' => $role);
+        $this->Md->update($id, $user, 'user');
     }
 
     public function reset() {

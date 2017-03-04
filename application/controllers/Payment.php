@@ -61,6 +61,7 @@ class Payment extends CI_Controller {
         $date = trim($this->input->post('date'));
         $months = trim($this->input->post('month'));
         $years = trim($this->input->post('year'));
+         $companyID= trim($this->input->post('companyID'));
         unset($sql);
         if ($date) {
             $sql[] = "DAY(STR_TO_DATE(date,'%d-%m-%Y')) = '$date' ";
@@ -71,6 +72,12 @@ class Payment extends CI_Controller {
         if ($years) {
             $sql[] = "YEAR(STR_TO_DATE(date,'%d-%m-%Y')) = '$years' ";
         }
+        if ($companyID) {
+            $sql[] = "companyID = ".$companyID." ";
+        }
+       if (strpos($this->session->userdata('permission'), 'admin') != true) {
+            $sql[] = "companyID = ".$this->session->userdata('companyID')." ";
+        }
         $query = "SELECT * FROM payment";
         if (!empty($sql)) {
             $query .= ' WHERE ' . implode(' AND ', $sql);
@@ -80,7 +87,8 @@ class Payment extends CI_Controller {
         //var_dump($daily);
         if ($dailys) {
 
-            echo ' <table  class="display table table-bordered table-striped" id="dynamic-table" style="font-size: 12px;">
+            echo '<div class="scroll"> 
+                <table  class="display table table-bordered table-striped scroll" id="dynamic-table"  border="1px" cellpadding="2px" border-width="thin"  style="font-size: 12px; border-collapse: collapse;">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -159,7 +167,7 @@ class Payment extends CI_Controller {
                                         </tr>';
             echo '    </tbody>
 
-                        </table>';
+                        </table></div>';
         }
     }
 
@@ -332,6 +340,15 @@ class Payment extends CI_Controller {
 
         $this->load->helper(array('form', 'url'));
         $id = urldecode($this->uri->segment(3));
+         if (strpos($this->session->userdata('permission'), 'delete') != true) {
+             
+             $this->session->set_flashdata('msg', '<div class="alert alert-error">                                                   
+                                                <strong>
+                                                You do not have permission to delete 	</strong>									
+						</div>');
+            redirect('payment', 'refresh');
+         
+         }
 
         $query = $this->Md->cascade($id, 'payment', 'id');
 

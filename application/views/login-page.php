@@ -6,8 +6,8 @@
         <meta name="description" content="">
         <meta name="author" content="Dashboard">
         <meta name="keyword" content="Property management, estate manager, management, rent, Utility manager, land, solutions, estates">
-        <link rel=icon href="<?= base_url(); ?>images/fav.ico">
-        <title>Estate Professional</title>
+        <link rel=icon href="<?= base_url(); ?>images/favicon.ico">
+        <title>Pay bus</title>
 
         <!-- Bootstrap core CSS -->
         <link href="<?= base_url(); ?>assets/css/bootstrap.css" rel="stylesheet">
@@ -23,6 +23,12 @@
           <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
           <script src="https://oss.maxcdn.com/libs/respond.js/1.4.2/respond.min.js"></script>
         <![endif]-->
+        <style>
+
+            .panel-default {
+                border-color: #58C68A;
+            }
+        </style>
     </head>
 
     <body>
@@ -30,14 +36,14 @@
         <!-- **********************************************************************************************************************************************************
         MAIN CONTENT
         *********************************************************************************************************************************************************** -->
-        <div id="page-wrapper" class="page-wrapper-cls">
+        <div id="page-wrapper" class="text-center" style=" padding-left:30%; padding-top: 10%;">
 
-            <div class="row center-block">
-                <div class="col-md-6">
+            <div class="row">
+                <div class="text-center">
 
-                    <div class="panel panel-default">
+                    <div class="panel panel-default col-md-6">
                         <div class="panel-body ">
-                            <img alt="avatar" class="center-block" height="80px" width="290px" src="<?= base_url(); ?>images/paybus.jpeg">
+                            <img alt="avatar" class="center-block" height="80px" width="290px" src="<?= base_url(); ?>images/paybus.png">
 
                             <div class="form-group">
                                 <form id="station-form" class="form-login" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/welcome/login'  method="post">

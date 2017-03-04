@@ -292,7 +292,8 @@ select {
      -webkit-transform: translate(0,0);
     -ms-transform: translate(0,0);
     transform: translate(0,0);
-    width: 67%;
+    width: 50%;
+    padding: 5%;
 }
 .nicescroll-rails {
     height: 6px;
@@ -315,6 +316,32 @@ select {
     margin-bottom: 20px;
     border: 1px solid transparent;
     border-radius: 4px;
+}
+select {
+   
+    min-height: 26px;
+    
+}
+select, input[type="file"] {
+    height: 26px !important;
+   
+}
+.divider{
+    width:5px;
+    height:auto;
+    display:inline-block;
+}
+.modal-content {
+    position: relative;
+    background-color: #fff;
+    background-clip: padding-box;
+    border: 1px solid #999;
+    border: 9px solid rgba(0, 0, 0, .2);
+    border-radius: 3px;
+    outline: none;
+    -webkit-box-shadow: 0 3px 9px rgba(0, 0, 0, .5);
+    box-shadow: 0 0 9px rgba(0, 0, 0, 0.36);
+    padding: 5%;
 }
     
 

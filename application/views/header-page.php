@@ -28,7 +28,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a  class="navbar-brand" href="index.html"><img alt="avatar" height="50px" width="150px" src="<?= base_url(); ?>images/paybus.jpeg">
+                    <a  class="navbar-brand" href="index.html"><img alt="avatar" height="50px" width="150px" src="<?= base_url(); ?>images/paybus.png">
 
                     </a>
                 </div>
@@ -152,7 +152,7 @@
                         <li>
                             <a class="active-menu"  target="frame" href="<?php echo base_url() . "index.php/welcome/start"; ?>"><i class="fa fa-dashboard "></i>Dashboard</a>
                         </li>
-                        <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                        <?php if (strpos($this->session->userdata('permission'), 'company') == true) { ?>
                             <li>
                                 <a target="frame" href="<?php echo base_url() . "index.php/company/"; ?>"><i class="fa fa-connectdevelop"></i>Companies </a>
 
@@ -171,12 +171,12 @@
                         <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/driver/"; ?>"><i class="fa fa-area-chart"></i>Drivers</a>
                         </li>
-                        <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                        <?php if (strpos($this->session->userdata('permission'), 'user') == true) { ?>
                             <li>
                                 <a target="frame" href="<?php echo base_url() . "index.php/user/"; ?>"><i class="fa fa-user "></i>System users</a>
                             </li>
                         <?php } ?>
-                        <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                        <?php if (strpos($this->session->userdata('permission'), 'role') == true) { ?>
                             <li>
                                 <a target="frame" href="<?php echo base_url() . "index.php/role/"; ?>"><i class="fa fa-user "></i>User roles</a>
                             </li>
@@ -184,23 +184,24 @@
                         <li>
                             <a target="frame" href="<?php echo base_url() . "index.php/device/"; ?>"><i class="fa fa-arrow-circle-o-up"></i>Devices</a>
                         </li>
-                        <li>
-                            <a target="frame" href="<?php echo base_url() . "index.php/payment/"; ?>"><i class="fa fa-barcode"></i>Payments</a>
-                        </li>
-
-                        <li class="dropdown">
-                            <a class="dropdown-toggle" data-toggle="dropdown" href="#">
-                                <i class="fa fa-area-chart"></i>  <i class="fa fa-caret-down"></i>
-                                Reports
-                            </a>
-                            <ul class="dropdown-menu dropdown-user">
-                                <li><a target="frame" href="<?php echo base_url() . "index.php/payment/daily"; ?>"><i class="fa fa-calendar"></i>  Daily</a>
-                                </li>
-                                <li class="divider"></li>
-                                <li><a target="frame" href="<?php echo base_url() . "index.php/payment/monthly"; ?>"><i class="fa fa-area-chart"></i> Monthly</a>
-                                </li>
-
-                            </ul>
+                        <?php if (strpos($this->session->userdata('permission'), 'payment') == true) { ?>
+                            <li>
+                                <a target="frame" href="<?php echo base_url() . "index.php/payment/"; ?>"><i class="fa fa-barcode"></i>Payments</a>
+                            </li>
+                        <?php } ?>
+                        <?php if (strpos($this->session->userdata('permission'), 'report') == true) { ?>
+                            <li class="dropdown">
+                                <a class="dropdown-toggle" data-toggle="dropdown" href="#">
+                                    <i class="fa fa-area-chart"></i>  <i class="fa fa-caret-down"></i>
+                                    Reports
+                                </a>
+                                <ul class="dropdown-menu dropdown-user">
+                                    <li><a target="frame" href="<?php echo base_url() . "index.php/payment/daily"; ?>"><i class="fa fa-calendar"></i> Generic</a>
+                                    </li>
+                                    <li class="divider"></li>
+                                  
+                                </ul>
+                            <?php } ?>
 
                         </li>
 

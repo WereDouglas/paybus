@@ -40,6 +40,15 @@ class Driver extends CI_Controller {
         $this->load->helper(array('form', 'url'));
         //user information
         // $clientID = $this->GUID();
+        $query = $this->Md->query("SELECT * FROM driver WHERE contact='" .$this->input->post('contact'). "'");
+ 
+        if (count($query)>0) {
+           
+            $status .= '<div class="alert alert-success">  <strong>User contact already registered</strong></div>';
+            $this->session->set_flashdata('msg', $status);
+            redirect('driver', 'refresh');
+            return;
+        } 
         if ($this->input->post('name') != "") {
             ///organisation image uploads
             $file_element_name = 'userfile';

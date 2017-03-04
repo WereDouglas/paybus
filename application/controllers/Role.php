@@ -89,6 +89,22 @@ class Role extends CI_Controller {
         $query = $this->Md->query("SELECT * FROM roles");
         echo json_encode($query);
     }
+     public function details() {
+
+        $this->load->helper(array('form', 'url'));
+        $role = trim($this->input->post('role'));
+     
+        $get_result = $this->Md->query("SELECT * FROM roles WHERE id ='" . $role . "'");
+        // var_dump($get_result);
+        if (!$get_result) {
+            echo '<span style="color:#f00"> No information in the database </strong> does not exist in our database</span>';
+        } else {
+            foreach ($get_result as $res) {
+               
+                echo '<font class="red">PERMITTED ACTIONS:</font>  <div class="alert alert-info">'.$res->actions.'</div>';
+            }
+        }
+    }
 
     public function delete() {
 

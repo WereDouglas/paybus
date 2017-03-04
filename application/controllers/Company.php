@@ -40,6 +40,15 @@ class Company extends CI_Controller {
         $this->load->helper(array('form', 'url'));
         //user information
         // $clientID = $this->GUID();
+        $query = $this->Md->query("SELECT * FROM company WHERE name='" . $this->input->post('name') . "'");
+
+        if (count($query) > 0) {
+
+            $status .= '<div class="alert alert-success">  <strong>Company already registered</strong></div>';
+            $this->session->set_flashdata('msg', $status);
+            redirect('company', 'refresh');
+            return;
+        }
         if ($this->input->post('name') != "") {
             ///organisation image uploads
             $file_element_name = 'userfile';
@@ -55,7 +64,7 @@ class Company extends CI_Controller {
             }
             $data = $this->upload->data();
             $userfile = $data['file_name'];
-            $comp = array('name' => $this->input->post('name'), 'location' => $this->input->post('location'),'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
+            $comp = array('name' => $this->input->post('name'), 'location' => $this->input->post('location'), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
             $this->Md->save($comp, 'company');
 
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
@@ -93,7 +102,6 @@ class Company extends CI_Controller {
         }
     }
 
-   
     public function lists() {
         $query = $this->Md->query("SELECT * FROM company");
         //$query = $this->Md->query("SELECT * FROM client");
@@ -101,22 +109,21 @@ class Company extends CI_Controller {
     }
 
     public function delete() {
-      
-            $this->load->helper(array('form', 'url'));
-            $id = urldecode($this->uri->segment(3));
 
-            $query = $this->Md->cascade($id, 'company', 'id');
-          
-            if ($this->db->affected_rows() > 0) {
+        $this->load->helper(array('form', 'url'));
+        $id = urldecode($this->uri->segment(3));
 
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">
+        $query = $this->Md->cascade($id, 'company', 'id');
+
+        if ($this->db->affected_rows() > 0) {
+
+            $this->session->set_flashdata('msg', '<div class="alert alert-error">
                                                    
                                                 <strong>
                                                 Information deleted	</strong>									
 						</div>');
-                redirect('route', 'refresh');
-            }
-      
+            redirect('route', 'refresh');
+        }
     }
 
 }

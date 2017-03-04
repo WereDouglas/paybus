@@ -17,7 +17,7 @@ class Bus extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT *,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id WHERE bus.companyID='".$this->session->userdata('companyID')."'");
+        $query = $this->Md->query("SELECT *,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id WHERE bus.companyID='" . $this->session->userdata('companyID') . "'");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -41,10 +41,19 @@ class Bus extends CI_Controller {
         //user information
         // $clientID = $this->GUID();
         $name = $this->input->post('name');
+        
+        $query = $this->Md->query("SELECT * FROM bus WHERE regNo='" . $this->input->post('regNo') . "'");
+        if (count($query)) {
+
+            $status .= '<div class="alert alert-success">  <strong>Bus already registered</strong></div>';
+            $this->session->set_flashdata('msg', $status);
+            redirect('bus', 'refresh');
+            return;
+        }
         if ($name != "") {
 
-            $b = array('name' => $this->input->post('name'), 'companyID' => $this->input->post('companyID'), 'regNo' => $this->input->post('regNo'), 'seat' => $this->input->post('seats'), 'routeID' => $this->input->post('routeID'),'created' => date('d-m-Y'),'active'=>'true');
-            $this->Md->save($b, 'bus');           
+            $b = array('name' => $this->input->post('name'), 'companyID' => $this->input->post('companyID'), 'regNo' => $this->input->post('regNo'), 'seat' => $this->input->post('seats'), 'routeID' => $this->input->post('routeID'), 'created' => date('d-m-Y'), 'active' => 'true');
+            $this->Md->save($b, 'bus');
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);
             redirect('bus', 'refresh');
@@ -80,7 +89,6 @@ class Bus extends CI_Controller {
         }
     }
 
-   
     public function lists() {
         $query = $this->Md->query("SELECT * FROM bus");
         //$query = $this->Md->query("SELECT * FROM client");
@@ -88,22 +96,21 @@ class Bus extends CI_Controller {
     }
 
     public function delete() {
-      
-            $this->load->helper(array('form', 'url'));
-            $id = urldecode($this->uri->segment(3));
 
-            $query = $this->Md->cascade($id, 'bus', 'id');
-          
-            if ($this->db->affected_rows() > 0) {
+        $this->load->helper(array('form', 'url'));
+        $id = urldecode($this->uri->segment(3));
 
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">
+        $query = $this->Md->cascade($id, 'bus', 'id');
+
+        if ($this->db->affected_rows() > 0) {
+
+            $this->session->set_flashdata('msg', '<div class="alert alert-error">
                                                    
                                                 <strong>
                                                 Information deleted	</strong>									
 						</div>');
-                redirect('route', 'refresh');
-            }
-      
+            redirect('route', 'refresh');
+        }
     }
 
 }

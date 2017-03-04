@@ -27,7 +27,7 @@
                                     <th>ID</th>
                                     <th>#</th>
                                     <th>Name</th>
-                                     <th>Role/Designation</th>
+                                    <th>Role/Designation</th>
                                     <th>Company</th>
                                     <th>email</th>
                                     <th>Contact</th>
@@ -43,8 +43,10 @@
                                 <?php
                                 if (is_array($users) && count($users)) {
                                     foreach ($users as $loop) {
+                                        $id = $loop->id;
+                                        $role = $loop->role;
                                         ?>  
-                                        <tr class="odd">
+                                        <tr class="odd edit_tr" id="<?php echo $id; ?>">
                                             <td >
                                                 <?php echo $loop->id; ?>
                                             </td>
@@ -65,8 +67,23 @@
                                             <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->name; ?>
                                             </td>
-                                            
-                                             <td ><?php echo $loop->role; ?></td>
+
+                                            <td class="edit_td">
+                                                <span id="role_<?php echo $id; ?>" class="text"><?php echo $role; ?></span>                                      
+                                                <select  name="type" class="editbox" id="role_input_<?php echo $id; ?>" >
+                                                    <option value="<?php echo $role; ?>" title="<?php echo $role; ?>"><?php echo $role; ?></option>
+
+                                                    <?php
+                                                    if (is_array($roles) && count($roles)) {
+                                                        foreach ($roles as $loops) {
+                                                            ?>                        
+                                                            <option value="<?= $loops->id ?>" /><?= $loops->name ?>
+                                                            <?php
+                                                        }
+                                                    }
+                                                    ?>
+                                                </select>
+                                            </td>  
                                             <td ><?php echo $loop->company; ?></td>
 
                                             <td id="email:<?php echo $loop->id; ?>" contenteditable="true">
@@ -117,22 +134,20 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Add user</h4>
+                <h4 class="modal-title" id="myModalLabel">ADD USER</h4>
             </div>
 
             <div class="modal-body">             
                 <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/user/create'  method="post">
-                    <div class="item form-group">                    
-                        <label class="control-label col-md-12 col-sm-12 col-xs-12">Profile picture</label>  
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="file" name="userfile" id="userfile" class="btn-default btn-small"/>
-                            <div id="imagePreview" ></div>      
-                        </div>
+                    <div class="form-group">                    
+                        <label >Profile picture</label>                        
+                        <input type="file" name="userfile" id="userfile" class="btn-default btn-small form-control"/>
+                        <div id="imagePreview" ></div>                      
                     </div>
-                      <?php if(strpos( $this->session->userdata('permission') , 'admin' ) == true) {?>
-                    <div class=" item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Select company</label>
-                        <div class="col-md-6 col-sm-5 col-xs-12">
+                    <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                        <div class="form-group">
+                            <label>Select company</label>
+
 
                             <input class="easyui-combobox form-control" name="companyID" id="companyID" style="width:100%;height:26px" data-options="
                                    url:'<?php echo base_url() ?>index.php/company/lists',
@@ -141,52 +156,54 @@
                                    textField:'name',
                                    multiple:false,
                                    panelHeight:'auto'
-                                   ">
-                        </div>
-                    </div>
-                    <?php }?>
-                     <div class=" item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Select role</label>
-                        <div class="col-md-6 col-sm-5 col-xs-12">
+                                   "   >
 
-                            <input class="easyui-combobox form-control" name="role" id="role" style="width:100%;height:26px" data-options="
-                                   url:'<?php echo base_url() ?>index.php/role/lists',
-                                   method:'get',
-                                   valueField:'id',
-                                   textField:'name',
-                                   multiple:false,
-                                   panelHeight:'auto'
-                                   ">
                         </div>
-                    </div>
-                    <div class="form-group">
-                        <div class="col-sm-10">
-                            <label >Active</label>
-                            <select class="form-control" id="active" name="active"> 
+                    <?php } ?>
+                    <div class="form-group">                     
 
-                                <option value="true">true</option> 
-                                <option value="false">false</option>                                  
-                            </select>
-                        </div><!--/col-sm-9--> 
+                        <label>Select role</label>
+
+                        <input class="easyui-combobox form-control" name="role" id="role" style="width:100%;height:26px" data-options="
+                               url:'<?php echo base_url() ?>index.php/role/lists',
+                               method:'get',
+                               valueField:'id',
+                               textField:'name',
+                               multiple:false,
+                               panelHeight:'auto',
+                               onChange: function(rec){
+                               SelectedRole('info');
+                               }
+                               ">
+                        <span id="loading_card" name ="loading_card"><img src="<?= base_url(); ?>images/loading.gif" alt="loading............" /></span>
+
+
+                    </div>
+                    <div class="form-group">                       
+                        <label >Active</label>
+                        <select class="form-control" id="active" name="active"> 
+
+                            <option value="true">true</option> 
+                            <option value="false">false</option>                                  
+                        </select>                       
                     </div><!--/form-group-->
-                    <div class="form-group">
-                        <div class="col-sm-10">
-                            <input type="text" name="name" placeholder="Full Name" id="name" required class="form-control"/>
-                        </div>
+                    <div class="form-group">                        
+                        <input type="text" name="name" placeholder="Full Name" id="name" required class="form-control"/>
+
                     </div>                  
 
                     <div>
                         <div class="form-group">
-                            <div class="col-sm-10">
-                                <input type="text" name="contact" placeholder="Contact No."  class="form-control"/>
-                            </div>
+
+                            <input type="text" name="contact" placeholder="Contact No."  class="form-control"/>
+
                         </div>
 
                         <div class="form-group">
 
-                            <div class="col-sm-10">
-                                <input type="text" name="email" placeholder="Email" id="email"  class="form-control"/>
-                            </div>
+
+                            <input type="text" name="email" placeholder="Email" id="email"  class="form-control"/>
+
                         </div>
                         <div class="form-group">
                             <label for="email">Password:</label>
@@ -199,19 +216,11 @@
 
                         </div>  
 
-                        <div class="form-group">
-                            <div class=" col-sm-10">
-                                <div class="checkbox checkbox_margin">
-                                    <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
-                                </div>
-                            </div>
-                        </div>
-
                 </form>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+              <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>  <button class="btn btn-success pull-right" type="submit">SUBMIT</button> 
 
             </div>
         </div>
@@ -226,6 +235,7 @@
 <script src="<?= base_url(); ?>js/validator.js"></script>
 <script>
                                             $(document).ready(function () {
+                                                $('#loading_card').hide();
                                                 $("#status").hide();
                                                 $(function () {
                                                     //acknowledgement message
@@ -247,6 +257,7 @@
                                                     });
 
                                                 });
+
                                             });
 
 </script>
@@ -282,5 +293,97 @@
         });
 
     }
+    function SelectedRole(ele) {
 
+
+        $('#loading_card').show();
+
+
+        var role = $("input[name=role]").val();
+
+        if (role.length > 0) {
+
+            $.post("<?php echo base_url() ?>index.php/role/details", {role: role}
+            , function (response) {
+                //#emailInfo is a span which will show you message
+
+                $('#loading_card').hide();
+                setTimeout(finishAjax('loading_card', escape(response)), 200);
+
+            }).fail(function (e) {
+                console.log(e);
+            }); //end change
+        } else {
+            alert("Please insert missing information");
+            $('#loading_card').hide();
+        }
+
+        function finishAjax(id, response) {
+            $('#' + id).html(unescape(response));
+            $('#' + id).fadeIn();
+        }
+    }
+
+
+</script>
+<script type="text/javascript">
+    $(document).ready(function ()
+    {
+        $(".editbox").hide();
+
+        $(".edit_tr").click(function ()
+        {
+            var ID = $(this).attr('id');
+
+            $("#role" + ID).hide();
+            $("#role_input_" + ID).show();
+
+
+        }).change(function ()
+        {
+            var ID = $(this).attr('id');
+            var role = $("#role_input_" + ID).val();
+
+
+            var dataString = 'id=' + ID + '&role=' + role;
+
+            $("#role_" + ID).html('<img src="<?= base_url(); ?>images/loading.gif" />'); // Loading image
+
+            if (role.length > 0)
+            {
+
+                $.ajax({
+                    type: "POST",
+                    url: "<?php echo base_url() . "index.php/user/updating/"; ?>",
+                    data: dataString,
+                    cache: false,
+                    success: function (html)
+                    {
+
+                        $("#role_" + ID).html(role);
+
+
+                    }
+                });
+            } else
+            {
+                alert('Enter something.');
+            }
+            location.reload();
+        });
+
+        // Edit input box click action
+        $(".editbox").mouseup(function ()
+        {
+            return false
+        });
+
+        // Outside click action
+        $(document).mouseup(function ()
+        {
+            $(".editbox").hide();
+            $(".text").show();
+        });
+
+    });
 </script>
