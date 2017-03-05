@@ -289,6 +289,8 @@ class Payment extends CI_Controller {
                     $b["cost"] = $res->cost;
                     $b["bus"] = $res->bus;
                     $b["seat"] = $res->seat;
+                    $b["code"] = $res->barcode;
+                    $b["date"] = $res->date;
                     echo json_encode($b);
                     return;
                 }
