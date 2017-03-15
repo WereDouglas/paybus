@@ -19,7 +19,7 @@
         <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/payment/create'  method="post">
             <div class="col-sm-6 col-md-6  " style=" padding-left:15%; padding-top: 5%; border: 1px;border-color: #58C68A; " >
                 <div  id="printableArea" class="">
-                      <img alt="avatar" class="center-block" height="80px" width="290px" src="<?= base_url(); ?>images/paybus.png">
+                      <img alt="avatar" class="center-block" height="100px" width="290px" src="<?= base_url(); ?>images/paybus.png">
 
                     <h4>RECEIPT</h4>
                     <div class="form-group">

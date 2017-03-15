@@ -78,7 +78,7 @@ class Payment extends CI_Controller {
        if (strpos($this->session->userdata('permission'), 'admin') != true) {
             $sql[] = "companyID = ".$this->session->userdata('companyID')." ";
         }
-        $query = "SELECT * FROM payment";
+        $query = "SELECT *,route.name AS route FROM payment LEFT JOIN route on route.id=payment.routeID ";
         if (!empty($sql)) {
             $query .= ' WHERE ' . implode(' AND ', $sql);
         }
@@ -88,7 +88,7 @@ class Payment extends CI_Controller {
         if ($dailys) {
 
             echo '<div class="scroll"> 
-                <table  class="display table table-bordered table-striped scroll" id="dynamic-table"  border="1px" cellpadding="2px" border-width="thin"  style="font-size: 12px; border-collapse: collapse;">
+                <table  class="scroll display table table-bordered table-striped scroll" id="dynamic-table"  border="1px" cellpadding="2px" border-width="thin"  style="font-size: 12px; border-collapse: collapse;">
                             <thead>
                                 <tr>
                                     <th>#</th>
@@ -133,7 +133,7 @@ class Payment extends CI_Controller {
                                             <td> ' . $loop->date . ' ' . $loop->start . '
                                             </td>
                                             <td > ' . number_format($loop->cost) . '</td>
-                                            <td > ' . $loop->route . '</td> 
+                                            <td > ' . $loop->route .' '.$loop->start_time .'</td> 
                                             <td > ' . $loop->barcode . '</td> 
                                             
 

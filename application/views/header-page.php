@@ -28,7 +28,7 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a  class="navbar-brand" href="index.html"><img alt="avatar" height="50px" width="150px" src="<?= base_url(); ?>images/paybus.png">
+                    <a  class="navbar-brand" href="#"><img alt="avatar" height="50px" width="80px" src="<?= base_url(); ?>images/paybus.png">
 
                     </a>
                 </div>

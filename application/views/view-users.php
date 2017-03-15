@@ -216,16 +216,17 @@
 
                         </div>  
 
+
+
+                    </div>
+                    <div class="modal-footer">
+                        <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>  <button class="btn btn-success pull-right" type="submit">SUBMIT</button> 
+
+                    </div>
                 </form>
-
-            </div>
-            <div class="modal-footer">
-              <button type="button" class="btn btn-danger pull-left" data-dismiss="modal">Close</button>  <button class="btn btn-success pull-right" type="submit">SUBMIT</button> 
-
             </div>
         </div>
     </div>
-</div>
 </div>
 <!-- sidebar chats -->
 

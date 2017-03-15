@@ -10,14 +10,14 @@
                                 // obj.style.width = obj.contentWindow.document.body.scrollHeight + 'px';
                             }
                         </script>
-                        <iframe id="frame" name="frame" frameborder="no" border="0" onload="resizeIframe(this)" scrolling="no"  style="padding: 10px; min-height:600px;" width="100%" class="span12" src="<?php echo base_url() . "index.php/home/start"; ?>"> </iframe>         
+                        <iframe id="frame" name="frame" frameborder="no" border="0" onload="resizeIframe(this)" scrolling="no"  style="padding: 10px; min-height:1000px;" width="100%" class="span12" src="<?php echo base_url() . "index.php/home/start"; ?>"> </iframe>         
 
 
     
         </div>
     <!-- /. WRAPPER  -->
     <footer >
-        &copy; 2017 Vuga-I | By : <a href="" target="_blank">Vuga-I</a>
+        <a href="" target="_blank"></a>
     </footer>
     <!-- /. FOOTER  -->
     <!-- SCRIPTS -AT THE BOTOM TO REDUCE THE LOAD TIME-->

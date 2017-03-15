@@ -20,9 +20,9 @@ class User extends CI_Controller {
         //  $query = $this->Md->query("SELECT * FROM client where org = '" . $this->session->userdata('orgID') . "' ");
 
         if (strpos($this->session->userdata('permission'), 'admin') == true) {
-            $query = $this->Md->query("SELECT *,user.id AS id ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role");
+            $query = $this->Md->query("SELECT *,user.id AS id ,user.image AS image,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role");
         } else {
-            $query = $this->Md->query("SELECT *,user.id AS id ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role WHERE user.company='" . $this->session->userdata('companyID') . "'");
+            $query = $this->Md->query("SELECT *,user.id AS id,user.image AS image ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role WHERE user.company='" . $this->session->userdata('companyID') . "'");
         }
         if ($query) {
             $data['users'] = $query;
@@ -261,7 +261,7 @@ class User extends CI_Controller {
         $userID = $this->input->post('userID');
         $namer = $this->input->post('namer');
 
-        $fileUrl = $this->Md->query_cell("SELECT image FROM user WHERE userID ='" . $userID . "'", 'image');
+        $fileUrl = $this->Md->query_cell("SELECT image FROM user WHERE id ='" . $userID . "'", 'image');
 
         $this->Md->file_remove($fileUrl, 'uploads');
         $file_element_name = 'userfile';
@@ -284,7 +284,7 @@ class User extends CI_Controller {
         $data = $this->upload->data();
         $userfile = $data['file_name'];
         $user = array('image' => $userfile);
-        $this->Md->update_dynamic($userID, 'userID', 'user', $user);
+        $this->Md->update_dynamic($userID, 'id', 'user', $user);
 
         $this->session->set_flashdata('msg', '<div class="alert alert-success">  <strong>Image updated saved</strong></div>');
 

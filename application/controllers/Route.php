@@ -17,7 +17,7 @@ class Route extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT * FROM route WHERE company='".$this->session->userdata('companyID')."'");
+        $query = $this->Md->query("SELECT * FROM route WHERE company='" . $this->session->userdata('companyID') . "'");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -88,21 +88,31 @@ class Route extends CI_Controller {
     public function arraylist() {
         //$query = $this->Md->query("SELECT * FROM route");
         //$query = $this->Md->query("SELECT * FROM client");
-
-        $query = $this->Md->query("SELECT * FROM route ");
+        $companyID = urldecode($this->uri->segment(3));
+        $date = urldecode($this->uri->segment(4));
+        $query = $this->Md->query("SELECT *,route.name AS name,bus.name AS bus,route.id AS routeID,bus.id AS busID FROM route LEFT JOIN bus ON bus.routeID = route.id WHERE  route.company='" . $companyID . "'");
         if ($query) {
+
             $routes = array();
             $r = array();
 
             foreach ($query as $res) {
+                $payments = $this->Md->query("SELECT * FROM payment WHERE bus = '" . $res->regNo . "' AND STR_TO_DATE( created,  '%d-%m-%Y' ) = STR_TO_DATE(  '$date',  '%d-%m-%Y' ) ");
+                // var_dump($get_result);
+                $bus_no = $res->regNo;
+                $busID = $res->busID;
+                $seats = $res->seat;
+               
+              $bal_seats = ($seats - count($payments));
+                $your_seat =  (($seats) - ($seats - count($payments)) + 1);
 
                 $b["id"] = $res->id;
                 $b["name"] = $res->name;
                 $b["cost"] = $res->cost;
+                $b["seat"] =   $bal_seats;
                 $b["start"] = $res->startp;
                 $b["stop"] = $res->endp;
                 $b["distance"] = $res->distance;
-                
                 $b["start_time"] = $res->start_time;
                 $b["end_time"] = $res->end_time;
 
