@@ -17,8 +17,14 @@ class Role extends CI_Controller {
     }
 
     public function index() {
-       
-        $query = $this->Md->query("SELECT * FROM roles");
+
+        if ($this->session->userdata('companyID') == "") {
+            $query = $this->Md->query("SELECT * FROM roles");
+        } else {
+
+            $query = $this->Md->query("SELECT * FROM roles WHERE tier<>'Administrative' AND companyID='".$this->session->userdata('companyID')."'");
+        }
+
         if ($query) {
             $data['roles'] = $query;
         } else {
@@ -41,10 +47,14 @@ class Role extends CI_Controller {
         //user information
         // $userID = $this->GUID();
         $name = $this->input->post('name');
+        if($this->session->userdata('companyID')!=""){            
+            $tier="company";
+        }
+        else{$tier="Administrative";}
 
         if ($name != "") {
-            
-            $user = array('name' => $this->input->post('name'), 'actions' => $this->input->post('actions'));
+
+            $user = array('name' => $this->input->post('name'), 'views' => $this->input->post('views'), 'actions' => $this->input->post('actions'),'companyID'=>$this->session->userdata('companyID'),'tier'=>$tier);
             $this->Md->save($user, 'roles');
 
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
@@ -53,7 +63,6 @@ class Role extends CI_Controller {
         }
     }
 
-   
     public function update() {
 
         $this->load->helper(array('form', 'url'));
@@ -83,25 +92,30 @@ class Role extends CI_Controller {
         }
     }
 
-    
     public function lists() {
         //  $query = $this->Md->query("SELECT * FROM client WHERE  orgID='" . $this->session->userdata('orgID') . "'");
-        $query = $this->Md->query("SELECT * FROM roles");
+        if ($this->session->userdata('role') == "Administrator") {
+            $query = $this->Md->query("SELECT * FROM roles");
+        } else {
+            $query = $this->Md->query("SELECT * FROM roles WHERE name<>'Administrator' AND companyID='" . $this->session->userdata('companyID') . "' ");
+        }
+
         echo json_encode($query);
     }
-     public function details() {
+
+    public function details() {
 
         $this->load->helper(array('form', 'url'));
         $role = trim($this->input->post('role'));
-     
+
         $get_result = $this->Md->query("SELECT * FROM roles WHERE id ='" . $role . "'");
         // var_dump($get_result);
         if (!$get_result) {
             echo '<span style="color:#f00"> No information in the database </strong> does not exist in our database</span>';
         } else {
             foreach ($get_result as $res) {
-               
-                echo '<font class="red">PERMITTED ACTIONS:</font>  <div class="alert alert-info">'.$res->actions.'</div>';
+
+                echo '<font class="red">PERMITTED ACTIONS:</font>  <div class="alert alert-info">' . $res->actions . '</div>';
             }
         }
     }
@@ -110,7 +124,7 @@ class Role extends CI_Controller {
 
         $this->load->helper(array('form', 'url'));
         $id = urldecode($this->uri->segment(3));
-        $query = $this->Md->delete($id, 'role');
+        $query = $this->Md->delete($id, 'roles');
         //cascade($id,$table,$field)
         //$query = $this->Md->cascade($id, 'user', 'id');
         if ($this->db->affected_rows() > 0) {

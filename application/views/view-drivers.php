@@ -105,78 +105,66 @@
             </div>
             <div class="modal-body">             
                 <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/driver/create'  method="post">
-                    <div class=" item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Company</label>
-                        <div class="col-md-6 col-sm-5 col-xs-12">
 
-                            <input class="easyui-combobox form-control" name="companyID" id="companyID" style="width:100%;height:26px" data-options="
-                                   url:'<?php echo base_url() ?>index.php/company/lists',
-                                   method:'get',
-                                   valueField:'id',
-                                   textField:'name',
-                                   multiple:false,
-                                   panelHeight:'auto'
-                                   ">
-                        </div>
-                    </div>
                     <div class=" item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Bus</label>
-                        <div class="col-md-6 col-sm-5 col-xs-12">
+                        <label >Bus</label>
 
-                            <input class="easyui-combobox form-control" name="busID" id="busID" style="width:100%;height:26px" data-options="
-                                   url:'<?php echo base_url() ?>index.php/bus/lists',
-                                   method:'get',
-                                   valueField:'id',
-                                   textField:'regNo',
-                                   multiple:false,
-                                   panelHeight:'auto'
-                                   ">
-                        </div>
+
+                        <input class="easyui-combobox form-control" name="busID" id="busID" style="width:100%;height:26px" data-options="
+                               url:'<?php echo base_url() ?>index.php/bus/lists',
+                               method:'get',
+                               valueField:'id',
+                               textField:'regNo',
+                               multiple:false,
+                               panelHeight:'auto'
+                               ">
                     </div>
+
 
                     <div class="form-group">
-                        <div class="col-sm-10">
-                            <input type="text" name="name" placeholder="Name" id="name" required class="form-control"/>
-                        </div>
+
+                        <input type="text" name="name" placeholder="Name" id="name" required class="form-control"/>
+
                     </div>                  
 
 
                     <div class="form-group">
 
-                        <div class="col-sm-10">
-                            <input type="text" name="contact" placeholder="Contact" id="contact"  class="form-control"/>
-                        </div>
+
+                        <input type="text" name="contact" placeholder="Contact" id="contact"  class="form-control"/>
+
                     </div>
                     <div class="form-group">
 
-                        <div class="col-sm-10">
-                            <input type="text" name="email" placeholder="E-mail" id="email"  class="form-control"/>
-                        </div>
+
+                        <input type="text" name="email" placeholder="E-mail" id="email"  class="form-control"/>
+
                     </div>
                     <div class="item form-group">                    
-                        <label class="control-label col-md-12 col-sm-12 col-xs-12">Profile picture</label>  
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="file" name="userfile" id="userfile" class="btn-default btn-small"/>
-                            <div id="imagePreview" ></div>      
-                        </div>
+                        <label >Profile picture</label>  
+
+                        <input type="file" name="userfile" id="userfile" class="btn-default btn-small"/>
+                        <div id="imagePreview" ></div>      
                     </div>
+
                     <div class="form-group">
-                        <div class=" col-sm-10">
-                            <div class="checkbox checkbox_margin">
-                                <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
-                            </div>
-                        </div>
+
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                        <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
+
                     </div>
-
                 </form>
-
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
-
             </div>
         </div>
+
+
+
     </div>
+    <div class="modal-footer">
+
+    </div>
+</div>
+</div>
 </div>
 <!-- sidebar chats -->
 

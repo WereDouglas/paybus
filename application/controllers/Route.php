@@ -16,10 +16,13 @@ class Route extends CI_Controller {
     }
 
     public function index() {
+        if ($this->session->userdata('role') == "Administrator") {
+            $query = $this->Md->query("SELECT *,route.name AS name,route.id AS id,company.name AS company,company.id AS compID FROM route LEFT JOIN company ON company.id = route.company ");
+        } else {
 
-        $query = $this->Md->query("SELECT * FROM route WHERE company='" . $this->session->userdata('companyID') . "'");
-        // $query = $this->Md->query("SELECT * FROM client  ");
-
+            $query = $this->Md->query("SELECT * FROM route WHERE company='" . $this->session->userdata('companyID') . "'");
+        }
+      //  var_dump($query);
         if ($query) {
             $data['clients'] = $query;
         } else {
@@ -80,7 +83,7 @@ class Route extends CI_Controller {
     }
 
     public function lists() {
-        $query = $this->Md->query("SELECT * FROM route");
+        $query = $this->Md->query("SELECT * FROM route WHERE company='".$this->session->userdata('companyID')."'");
         //$query = $this->Md->query("SELECT * FROM client");
         echo json_encode($query);
     }
@@ -102,14 +105,14 @@ class Route extends CI_Controller {
                 $bus_no = $res->regNo;
                 $busID = $res->busID;
                 $seats = $res->seat;
-               
-              $bal_seats = ($seats - count($payments));
-                $your_seat =  (($seats) - ($seats - count($payments)) + 1);
+
+                $bal_seats = ($seats - count($payments));
+                $your_seat = (($seats) - ($seats - count($payments)) + 1);
 
                 $b["id"] = $res->id;
                 $b["name"] = $res->name;
                 $b["cost"] = $res->cost;
-                $b["seat"] =   $bal_seats;
+                $b["seat"] = $bal_seats;
                 $b["start"] = $res->startp;
                 $b["stop"] = $res->endp;
                 $b["distance"] = $res->distance;

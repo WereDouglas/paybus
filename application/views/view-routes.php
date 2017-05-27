@@ -27,13 +27,12 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>Name</th>
+                                     <th>Company</th>
+                                    <th>Route Name</th>
                                     <th>Start point</th>
                                     <th>End point</th>
                                     <th class="hidden-phone">Cost</th>
-                                    <th class="hidden-phone">Start coordinates</th>
-                                    <th class="hidden-phone">End coordinates</th>                                   
-                                    <th class="hidden-phone">Start time</th>
+                                     <th class="hidden-phone">Start time</th>
                                     <th class="hidden-phone">End time</th>
                                     <th class="hidden-phone">Distance</th>
                                     <th class="hidden-phone">Created</th>
@@ -48,8 +47,12 @@
                                     foreach ($clients as $loop) {
                                         ?>  
                                         <tr class="odd">
-                                            <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
+                                            
+                                            <td id="name:<?php echo $loop->id; ?>" contenteditable="false">
                                                 <?php echo $loop->id; ?>
+                                            </td>
+                                            <td >
+                                                <?php echo $loop->company; ?>
                                             </td>
                                             <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->name; ?>
@@ -60,9 +63,7 @@
                                                 <?php echo $loop->endp; ?>
                                             </td>
                                             <td id="cost:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->cost; ?></td>
-                                            <td id="startcoord:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->startcoord; ?></td>
-                                            <td id="endcoord:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->endcoord; ?></td>
-                                            <td id="start_time:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->start_time; ?></td>
+                                              <td id="start_time:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->start_time; ?></td>
                                             <td id="end_time:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->end_time; ?></td>
                                             <td id="distance:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->distance; ?></td>
                                             <td id="created:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->created; ?></td>
@@ -101,75 +102,55 @@
                 <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/route/create'  method="post">
 
                     <div class="form-group">
-                        <div class="col-sm-10">
                             <input type="text" name="name" placeholder="Name" id="name" required class="form-control"/>
-                        </div>
+                   
                     </div>                  
 
 
                     <div class="form-group">
-
-                        <div class="col-sm-10">
                             <input type="text" name="startp" placeholder="Starting point"  class="form-control"/>
-                        </div>
+                      
                     </div>
 
                     <div class="form-group">
-
-                        <div class="col-sm-10">
                             <input type="text" name="endp" placeholder="Ending point" id="email"  class="form-control"/>
-                        </div>
+                   
                     </div>
                     <div class="form-group">
-
-                        <div class="col-sm-10">
                             <input type="text" name="cost" placeholder="Route cost" id="cost"  class="form-control"/>
-                        </div>
+                   
                     </div>
-                    <div class="form-group">
-                        <div class="col-sm-10">
-                            <input type="text" name="startcoord" placeholder="Start coordinates(latitude,longitude)" id="kincontact"  class="form-control"/>
-                        </div>
-                    </div>
+                   
                     <div class="form-group">
 
-                        <div class="col-sm-10">
-                            <input type="text" name="endcoord" placeholder="End coordinates(latitude,longitude)" id="account"  class="form-control"/>
-                        </div>
-                    </div>
-                    <div class="form-group">
-
-                        <div class="col-sm-10">
                             <input type="text" name="starttime" placeholder="Route start time" id="starttime"  class="form-control"/>
-                        </div>
+                      
                     </div>
                     <div class="form-group">
 
-                        <div class="col-sm-10">
                             <input type="text" name="endtime" placeholder="Route end time" id="endtime"  class="form-control"/>
-                        </div>
+                     
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-10">
+                       
                             <input type="text" name="distance" placeholder="Distance" id="propertyname"  class="form-control"/>
-                        </div>
+                       
                     </div>
 
 
                     <div class="form-group">
-                        <div class=" col-sm-10">
-                            <div class="checkbox checkbox_margin">
+                        
+                                <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+
                                 <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
-                            </div>
-                        </div>
+                           
                     </div>
 
                 </form>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
-
+                
             </div>
         </div>
     </div>

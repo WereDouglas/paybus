@@ -2,12 +2,11 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class Payment extends CI_Controller {
+class Sessions extends CI_Controller {
 
     function __construct() {
-
         parent::__construct();
-         error_reporting(E_PARSE);
+        error_reporting(E_PARSE);
         $this->load->model('Md');
         $this->load->library('session');
         $this->load->library('encrypt');
@@ -18,36 +17,16 @@ class Payment extends CI_Controller {
     public function index() {
 
         if ($this->session->userdata('companyID') == "") {
-            $query = $this->Md->query("SELECT *,payment.cost AS cost,payment.name AS name,payment.contact AS contact,payment.bus AS bus,user.name AS user,payment.id AS id,payment.contact As contact,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON  route.id =  payment.routeID LEFT JOIN user ON user.id = payment.userID  WHERE payment.date = '" . date('d-m-Y') . "'");
+            $query = $this->Md->query("SELECT *,sessions.route AS route,company.name AS company,user.name AS user,sessions.id AS id FROM sessions LEFT JOIN company ON  company.id = sessions.companyID LEFT JOIN user ON user.id = sessions.userID");
         } else {
-            $query = $this->Md->query("SELECT *,payment.name AS name,payment.contact AS contact,payment.bus AS bus,payment.cost AS cost,user.name AS user,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON route.id= payment.routeID LEFT JOIN user ON user.id = payment.userID   WHERE payment.companyID ='" . $this->session->userdata('companyID') . "' AND payment.date = '" . date('d-m-Y') . "'");
+            $query = $this->Md->query("SELECT *,sessions.route AS route,company.name AS company,user.name AS user,sessions.id AS id FROM sessions LEFT JOIN company ON  company.id = sessions.companyID LEFT JOIN user ON user.id = sessions.userID WHERE sessions.companyID='" . $this->session->userdata('companyID') . "'");
         }
         if ($query) {
             $data['clients'] = $query;
         } else {
             $data['clients'] = array();
         }
-         $query = $this->Md->query("SELECT *,user.name AS user,expenses.id AS id  FROM expenses LEFT JOIN company ON company.id =  expenses.companyID LEFT JOIN user ON user.id = expenses.userID WHERE expenses.companyID ='" . $this->session->userdata('companyID') . "' AND expenses.created = '" . date('d-m-Y') . "'");
-         
-        if ($query) {
-            $data['exp'] = $query;
-        } else {
-            $data['exp'] = array();
-        }
-        
-        $this->load->view('view-payments', $data);
-    }
-
-    public function daily() {
-        $query = $this->Md->query("SELECT *,payment.cost AS cost,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON payment.routeID = route.id WHERE payment.companyID ='" . $this->session->userdata('companyID') . "'");
-        // $query = $this->Md->query("SELECT * FROM client  ");
-
-        if ($query) {
-            $data['clients'] = $query;
-        } else {
-            $data['clients'] = array();
-        }
-        $this->load->view('view-daily', $data);
+        $this->load->view('view-sessions', $data);
     }
 
     public function periodic() {
@@ -59,7 +38,149 @@ class Payment extends CI_Controller {
         } else {
             $data['clients'] = array();
         }
-        $this->load->view('view-periodic', $data);
+        $this->load->view('view-sessional', $data);
+    }
+
+    public function periodic_report() {
+
+        $this->load->helper(array('form', 'url'));
+        $from = date('d-m-Y', strtotime($this->input->post('from')));
+        $to = date('d-m-Y', strtotime($this->input->post('to')));
+
+        unset($sql);
+
+        if ($from != '' & $to != '') {
+            $sql[] = "DAY(STR_TO_DATE(sessions.created,'%d-%m-%Y')) BETWEEN '$from' AND '$to' ";
+        }
+        if ($this->session->userdata('companyID') == "") {
+            if ($this->input->post('companyID') != "") {
+                $companyID = trim($this->input->post('companyID'));
+                $sql[] = "sessions.companyID = " . $companyID . " ";
+            }
+        } else {
+            $companyID = $this->session->userdata('companyID');
+            $sql[] = "sessions.companyID = " . $companyID . " ";
+        }
+        $query = "SELECT *,sessions.route AS route,company.name AS company,user.name AS user,sessions.id AS id FROM sessions LEFT JOIN company ON  company.id = sessions.companyID LEFT JOIN user ON user.id = sessions.userID";
+
+        if (!empty($sql)) {
+            $query .= ' WHERE ' . implode(' AND ', $sql);
+        }
+
+        $dailys = $this->Md->query($query);
+        //var_dump($daily);
+        if ($dailys) {
+
+            echo '<div class="scroll"> 
+                <table  class="scroll display table table-bordered table-striped scroll" id="dynamic-table"  border="1px" cellpadding="2px" border-width="thin"  style="font-size: 12px; border-collapse: collapse;">
+                            <thead>
+                                 <tr>
+                                    <th>#</th>
+                                    <th>DATE</th>
+                                    <th>ID</th>
+                                    <th>ROUTE</th>
+                                    <th>COMPANY</th>                                    
+                                    <th class="hidden-phone">SEATS</th>
+                                    <th>STATUS</th>
+                                    <th class="hidden-phone">COST</th>                                   
+                                    <th class="hidden-phone">USER</th>                                    
+                                    <th class="hidden-phone">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody>';
+            //var_dump($dailys);
+            $sum = "0";
+            $count = 1;
+            if (is_array($dailys) && count($dailys)) {
+                foreach ($dailys as $loop) {
+                    echo '       <tr class="odd">
+                                            <td>' . $loop->id . '
+                                            </td>
+                                            <td>' . $loop->created . '
+                                            </td>
+                                            <td >' . $loop->sessionID . '
+                                            </td>
+                                            <td>' . $loop->route . '
+                                            </td>                                            
+                                            <td>' . $loop->company . '
+                                            </td>
+                                            <td >' . $loop->max . '
+                                            </td>
+                                            <td>' . $loop->status . '
+                                            </td>
+                                            <td >' . number_format($loop->cost) . '</td>
+                                            <td >' . $loop->user . '</td>                                         
+                                            <td class="edit_td">
+                                                 <a class="btn btn-success btn-xs" href="' . base_url() . "index.php/sessions/payments/" . $loop->sessionID . '"><li class="fa fa-desktop-o">View</li></a>
+
+                                                <a class="btn btn-danger btn-xs" href="' . base_url() . "index.php/sessions/delete/" . $loop->id . '"><li class="fa fa-trash-o">Delete</li></a>
+
+                                            </td> 
+
+                                        </tr>';
+                    $sum = $sum + $loop->cost;
+                }
+            }
+
+            echo '       <tr class="odd">
+                                            <td>
+                                               
+                                            </td>
+                                            <td>
+                                                
+                                            </td>
+                                            <td>
+                                            </td>
+                                            <td >
+                                                
+                                            </td>
+
+                                            <td ></td>
+                                            <td>  </td>
+                                             <td>TOTAL </td>
+                                             <td > ' . number_format($sum) . '</td>
+                                            <td> </td>
+                                           
+                                            
+                                            <td > </td> 
+                                            <td > </td> 
+                                            
+
+                                        </tr>';
+            echo '    </tbody>
+
+                        </table></div>';
+        }
+    }
+
+    public function payments() {
+        $sessionID = urldecode($this->uri->segment(3));
+        $query = $this->Md->query("SELECT *,user.name AS user,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON route.id= payment.routeID LEFT JOIN user ON user.id = payment.userID  WHERE payment.companyID ='" . $this->session->userdata('companyID') . "' AND payment.sessionID = '" . $sessionID . "'");
+
+        if ($query) {
+            $data['clients'] = $query;
+        } else {
+            $data['clients'] = array();
+        }
+        $quer = $this->Md->query("SELECT * FROM expenses WHERE sessionID = '" . $sessionID . "'");
+       // var_dump($query);
+        if ($quer) {
+            $data['exp'] = $quer;
+        } 
+        $this->load->view('view-payments', $data);
+    }
+
+    public function daily() {
+
+        $query = $this->Md->query("SELECT *,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON payment.routeID = route.id WHERE payment.companyID ='" . $this->session->userdata('companyID') . "'");
+        // $query = $this->Md->query("SELECT * FROM client  ");
+
+        if ($query) {
+            $data['clients'] = $query;
+        } else {
+            $data['clients'] = array();
+        }
+        $this->load->view('view-daily', $data);
     }
 
     public function monthly() {
@@ -78,6 +199,7 @@ class Payment extends CI_Controller {
     public function daily_report() {
 
         $this->load->helper(array('form', 'url'));
+
         $date = trim($this->input->post('date'));
         $months = trim($this->input->post('month'));
         $years = trim($this->input->post('year'));
@@ -105,7 +227,7 @@ class Payment extends CI_Controller {
             $sql[] = "payment.companyID = " . $companyID . " ";
         }
 
-        $query = "SELECT *,user.name AS user,payment.cost AS cost,route.start_time AS time,route.name As route,payment.name AS name,payment.contact AS contact,payment.bus AS bus,route.name AS route FROM payment LEFT JOIN route on route.id=payment.routeID LEFT JOIN user ON user.id = payment.userID  ";
+        $query = "SELECT *,route.name AS route FROM payment LEFT JOIN route on route.id=payment.routeID ";
         if (!empty($sql)) {
             $query .= ' WHERE ' . implode(' AND ', $sql);
         }
@@ -114,21 +236,21 @@ class Payment extends CI_Controller {
         //var_dump($daily);
         if ($dailys) {
 
-            echo '<div class="scroll"> 
+            echo '<div class="scroll">
                 <table  class="scroll display table table-bordered table-striped scroll" id="dynamic-table"  border="1px" cellpadding="2px" border-width="thin"  style="font-size: 12px; border-collapse: collapse;">
                             <thead>
                                 <tr>
                                     <th>#</th>
                                     <th>Date</th>
                                     <th>Contact</th>
-                                    <th>Name</th>                                  
+                                    <th>Name</th>
+                                    <th>E-mail</th>
                                     <th class="hidden-phone">Bus</th>
                                     <th class="hidden-phone">Seat</th>
                                     <th>Date/Time of travel</th>
-                                    <th class="hidden-phone">Cost</th>                                   
+                                    <th class="hidden-phone">Cost</th>
                                     <th class="hidden-phone">Route</th>
                                     <th class="hidden-phone">Bar code</th>
-                                      <th>user</th>
                                 </tr>
                             </thead>
                             <tbody>';
@@ -153,123 +275,7 @@ class Payment extends CI_Controller {
                                                  ' . $loop->name . '
                                             </td>
 
-                                           
-                                            <td> ' . $loop->bus . '
-                                            </td>
-                                            <td> ' . $loop->seat . '
-                                            </td>
-                                            <td> ' . $loop->date . ' ' . $loop->time . '
-                                            </td>
-                                            <td > ' . number_format($loop->cost) . '</td>
-                                            <td > ' . $loop->route . ' ' . $loop->time . '</td> 
-                                            <td > ' . $loop->barcode . '</td> 
-                                                 <td > ' . $loop->user . '</td>
-                                            
-
-                                        </tr>';
-                    $sum = $sum + $loop->cost;
-                }
-            }
-
-            echo '       <tr class="odd">
-                                            <td>
-                                               
-                                            </td>
-                                            <td>
-                                                
-                                            </td>
-                                            <td>
-                                            </td>
-                                            <td >
-                                                
-                                            </td>
-
-                                            <td ></td>
-                                            <td>  </td>
-                                            <td> </td>
-                                            <td>TOTAL </td>
-                                            <td > ' . number_format($sum) . '</td>
-                                            <td > </td> 
-                                            <td > </td> 
-                                            
-
-                                        </tr>';
-            echo '    </tbody>
-
-                        </table></div>';
-        }
-    }
-
-    public function periodic_report() {
-
-        $this->load->helper(array('form', 'url'));
-        $from = date('d-m-Y', strtotime($this->input->post('from')));
-        $to = date('d-m-Y', strtotime($this->input->post('to')));
-
-        unset($sql);
-
-        if ($from != '' & $to != '') {
-            $sql[] = "DAY(STR_TO_DATE(date,'%d-%m-%Y')) BETWEEN '$from' AND '$to' ";
-        }
-        if ($this->session->userdata('companyID') == "") {
-            if ($this->input->post('companyID') != "") {
-                $companyID = trim($this->input->post('companyID'));
-                $sql[] = "payment.companyID = " . $companyID . " ";
-            }
-        } else {
-            $companyID = $this->session->userdata('companyID');
-            $sql[] = "payment.companyID = " . $companyID . " ";
-        }
-
-        $query = "SELECT *,user.name AS user,payment.bus AS bus,route.name AS route FROM payment LEFT JOIN route on route.id=payment.routeID LEFT JOIN user ON user.id = payment.userID  ";
-        if (!empty($sql)) {
-            $query .= ' WHERE ' . implode(' AND ', $sql);
-        }
-
-        $dailys = $this->Md->query($query);
-        //var_dump($daily);
-        if ($dailys) {
-
-            echo '<div class="scroll"> 
-                <table  class="scroll display table table-bordered table-striped scroll" id="dynamic-table"  border="1px" cellpadding="2px" border-width="thin"  style="font-size: 12px; border-collapse: collapse;">
-                            <thead>
-                                <tr>
-                                    <th>#</th>
-                                    <th>Date</th>
-                                    <th>Contact</th>
-                                    <th>Name</th>                                  
-                                    <th class="hidden-phone">Bus</th>
-                                    <th class="hidden-phone">Seat</th>
-                                    <th>Date/Time of travel</th>
-                                    <th class="hidden-phone">Cost</th>                                   
-                                    <th class="hidden-phone">Route</th>
-                                    <th class="hidden-phone">Bar code</th>
-                                      <th>user</th>
-                                </tr>
-                            </thead>
-                            <tbody>';
-            //var_dump($dailys);
-            $sum = "0";
-            $count = 1;
-            if (is_array($dailys) && count($dailys)) {
-                foreach ($dailys as $loop) {
-
-
-
-                    echo '       <tr class="odd">
-                                            <td>
-                                                ' . $count++ . '
-                                            </td>
-                                            <td>
-                                                 ' . $loop->date . '
-                                            </td>
-                                            <td> ' . $loop->contact . '
-                                            </td>
-                                            <td >
-                                                 ' . $loop->name . '
-                                            </td>
-
-                                           
+                                            <td > ' . $loop->email . '</td>
                                             <td> ' . $loop->bus . '
                                             </td>
                                             <td> ' . $loop->seat . '
@@ -277,10 +283,9 @@ class Payment extends CI_Controller {
                                             <td> ' . $loop->date . ' ' . $loop->start . '
                                             </td>
                                             <td > ' . number_format($loop->cost) . '</td>
-                                            <td > ' . $loop->route . ' ' . $loop->start_time . '</td> 
-                                            <td > ' . $loop->barcode . '</td> 
-                                                 <td > ' . $loop->user . '</td>
-                                            
+                                            <td > ' . $loop->route . ' ' . $loop->start_time . '</td>
+                                            <td > ' . $loop->barcode . '</td>
+
 
                                         </tr>';
                     $sum = $sum + $loop->cost;
@@ -289,26 +294,25 @@ class Payment extends CI_Controller {
 
             echo '       <tr class="odd">
                                             <td>
-                                               
+
                                             </td>
                                             <td>
-                                                
+
                                             </td>
                                             <td>
                                             </td>
                                             <td >
-                                                
+
                                             </td>
 
                                             <td ></td>
                                             <td>  </td>
-                                             <td>TOTAL </td>
-                                            <td > ' . number_format($sum) . '</td>
                                             <td> </td>
-                                           
-                                            <td > </td> 
-                                            <td > </td> 
-                                            
+                                            <td>TOTAL </td>
+                                            <td > ' . number_format($sum) . '</td>
+                                            <td > </td>
+                                            <td > </td>
+
 
                                         </tr>';
             echo '    </tbody>
@@ -395,18 +399,14 @@ class Payment extends CI_Controller {
 
     public function create() {
         $this->load->helper(array('form', 'url'));
-        $contact = $this->input->post('contact');
-        // $contact = "071234567";
-        $route = $this->input->post('routeID');
+
+        $sessionID = $this->input->post('sessionID');
 
         // $route="1";
-        if ($this->input->post('sessionID') != "") {
-            if ($route != "") {
-                $routeID = $this->Md->query_cell("SELECT * FROM route WHERE name LIKE '%" . $route . "%'", 'id');
-                $bus = $this->input->post('bus');
-                $p = array('userID' => $this->input->post('userID'), 'luggage' => $this->input->post('luggage'), 'sessionID' => $this->input->post('sessionID'), 'name' => $this->input->post('name'), 'seat' => $this->input->post('seat'), 'bus' => $bus, 'cost' => $this->input->post('cost'), 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'routeID' => $routeID, 'barcode' => $this->input->post('barcode'), 'companyID' => $this->input->post('companyID'), 'busID' => $bus, 'date' => date('d-m-Y', strtotime($this->input->post('date'))), 'created' => date('d-m-Y'));
-                $this->Md->save($p, 'payment');
-            }
+        if ($sessionID != "") {
+
+            $p = array('userID' => $this->input->post('userID'), 'sessionID' => $this->input->post('sessionID'), 'bus' => $this->input->post('bus'), 'route' => $this->input->post('route'), 'max' => $this->input->post('max'), 'status' => $this->input->post('status'), 'cost' => $this->input->post('cost'), 'companyID' => $this->input->post('companyID'), 'created' => date('d-m-Y'));
+            $this->Md->save($p, 'sessions');
             if ($this->input->post('device') == "true") {
                 $b["info"] = "information saved !";
                 $b["status"] = "true";
@@ -497,9 +497,9 @@ class Payment extends CI_Controller {
         $id = urldecode($this->uri->segment(3));
         if (strpos($this->session->userdata('permission'), 'delete') != true) {
 
-            $this->session->set_flashdata('msg', '<div class="alert alert-error">                                                   
+            $this->session->set_flashdata('msg', '<div class="alert alert-error">
                                                 <strong>
-                                                You do not have permission to delete 	</strong>									
+                                                You do not have permission to delete 	</strong>
 						</div>');
             redirect('payment', 'refresh');
         }
@@ -509,9 +509,9 @@ class Payment extends CI_Controller {
         if ($this->db->affected_rows() > 0) {
 
             $this->session->set_flashdata('msg', '<div class="alert alert-error">
-                                                   
+
                                                 <strong>
-                                                Information deleted	</strong>									
+                                                Information deleted	</strong>
 						</div>');
             redirect('payment', 'refresh');
         }

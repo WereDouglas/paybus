@@ -92,9 +92,8 @@
                                             <td id="contact:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->contact; ?></td>
                                             <td id="active:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->active; ?></td>
                                             <td id="created:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->created; ?></td>
-                                            <td class="edit_td">
-                                                <a class="btn btn-primary btn-xs" href="<?php echo base_url() . "index.php/user/profile/" . $loop->id;
-                                                ?>"><li class="fa fa-folder">View</li></a>
+                                            <td >
+                                                <a class="btn btn-primary btn-xs" href="<?php echo base_url() . "index.php/user/profile/" . $loop->id; ?>"><li class="fa fa-folder">View</li></a>
 
                                             </td> 
                                             <td>
@@ -105,7 +104,7 @@
                                                     </span>
                                                 </a>
                                             </td>
-                                            <td class="edit_td">
+                                            <td >
                                                 <a class="btn btn-danger btn-xs" href="<?php echo base_url() . "index.php/user/delete/" . $loop->id; ?>"><li class="fa fa-trash-o">Delete</li></a>
 
                                             </td> 
@@ -144,7 +143,7 @@
                         <input type="file" name="userfile" id="userfile" class="btn-default btn-small form-control"/>
                         <div id="imagePreview" ></div>                      
                     </div>
-                    <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                    <?php if ($this->session->userdata('role') == 'Administrator') { ?>
                         <div class="form-group">
                             <label>Select company</label>
 
@@ -176,8 +175,28 @@
                                }
                                ">
                         <span id="loading_card" name ="loading_card"><img src="<?= base_url(); ?>images/loading.gif" alt="loading............" /></span>
-
-
+                    </div>
+                    <div class="form-group">
+                        <label>Select bus</label>
+                        <input class="easyui-combobox form-control" name="bus" id="bus" style="width:100%;height:26px" data-options="
+                               url:'<?php echo base_url() ?>index.php/bus/lists',
+                               method:'get',
+                               valueField:'regNo',
+                               textField:'regNo',
+                               multiple:false,
+                               panelHeight:'auto'                               
+                               ">
+                    </div>
+                        <div class="form-group">
+                        <label>Select route</label>
+                        <input class="easyui-combobox form-control" name="route" id="route" style="width:100%;height:26px" data-options="
+                               url:'<?php echo base_url() ?>index.php/route/lists',
+                               method:'get',
+                               valueField:'id',
+                               textField:'name',
+                               multiple:false,
+                               panelHeight:'auto'                               
+                               ">
                     </div>
                     <div class="form-group">                       
                         <label >Active</label>
@@ -190,8 +209,7 @@
                     <div class="form-group">                        
                         <input type="text" name="name" placeholder="Full Name" id="name" required class="form-control"/>
 
-                    </div>                  
-
+                    </div>
                     <div>
                         <div class="form-group">
 

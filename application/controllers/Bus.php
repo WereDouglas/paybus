@@ -17,7 +17,14 @@ class Bus extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT *,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id WHERE bus.companyID='" . $this->session->userdata('companyID') . "'");
+
+        if ($this->session->userdata('role') == "Administrator") {
+
+            $query = $this->Md->query("SELECT *,bus.name AS bus,bus.id AS id,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id ");
+        } else {
+
+            $query = $this->Md->query("SELECT *,bus.name AS bus,bus.id AS id,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id WHERE bus.companyID='" . $this->session->userdata('companyID') . "'");
+        }
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -41,7 +48,7 @@ class Bus extends CI_Controller {
         //user information
         // $clientID = $this->GUID();
         $name = $this->input->post('name');
-        
+
         $query = $this->Md->query("SELECT * FROM bus WHERE regNo='" . $this->input->post('regNo') . "'");
         if (count($query)) {
 
@@ -50,11 +57,15 @@ class Bus extends CI_Controller {
             redirect('bus', 'refresh');
             return;
         }
-        if ($name != "") {
+        if ($name != "" && $this->session->userdata('companyID') != "") {
 
-            $b = array('name' => $this->input->post('name'), 'companyID' => $this->input->post('companyID'), 'regNo' => $this->input->post('regNo'), 'seat' => $this->input->post('seats'), 'routeID' => $this->input->post('routeID'), 'created' => date('d-m-Y'), 'active' => 'true');
+            $b = array('name' => $this->input->post('name'), 'companyID' => $this->session->userdata('companyID'), 'regNo' => $this->input->post('regNo'), 'seat' => $this->input->post('seats'), 'routeID' => $this->input->post('routeID'), 'created' => date('d-m-Y'), 'active' => 'true');
             $this->Md->save($b, 'bus');
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
+            $this->session->set_flashdata('msg', $status);
+            redirect('bus', 'refresh');
+        } else {
+            $status .= '<div class="alert alert-danger">  <strong>Error saving data either name not specified OR you are not a Company manager</strong></div>';
             $this->session->set_flashdata('msg', $status);
             redirect('bus', 'refresh');
         }
@@ -90,7 +101,8 @@ class Bus extends CI_Controller {
     }
 
     public function lists() {
-        $query = $this->Md->query("SELECT * FROM bus");
+
+        $query = $this->Md->query("SELECT * FROM bus WHERE companyID='" . $this->session->userdata('companyID') . "'");
         //$query = $this->Md->query("SELECT * FROM client");
         echo json_encode($query);
     }
@@ -109,8 +121,11 @@ class Bus extends CI_Controller {
                                                 <strong>
                                                 Information deleted	</strong>									
 						</div>');
-            redirect('route', 'refresh');
+            redirect('bus', 'refresh');
         }
+        $status .= '<div class="alert alert-success">  <strong>Information deleted</strong></div>';
+        $this->session->set_flashdata('msg', $status);
+        redirect('bus', 'refresh');
     }
 
 }

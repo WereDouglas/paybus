@@ -73,68 +73,21 @@
 
                                 </tr>
                                 <tr>
-                                    <td>FIRST NAME:</td>
-                                    <td id="name:<?php echo $loop->userID; ?>" contenteditable="true" class="editable">
+                                    <td>NAME:</td>
+                                    <td id="name:<?php echo $loop->id; ?>" contenteditable="true" class="editable">
                                         <?php echo $loop->name; ?>
                                     </td>
                                 </tr>
                                 <tr>
-                                    <td>DESIGNATION:</td>
-                                    <td id="role:<?php echo $loop->userID; ?>" contenteditable="false"><?php echo $this->session->userdata('role'); ?></td>
+                                    <td>LOCATION:</td>
+                                    <td id="location:<?php echo $loop->id; ?>" class="editable" contenteditable="true"><?php echo $loop->location; ?></td>
                                 </tr>
 
-                                <tr>
-                                    <td>CONTACT:</td>
-                                    <td id="contact:<?php echo $loop->id; ?>" contenteditable="true" class="editable"><?php echo $loop->contact; ?></td>
-
-                                </tr>
-
-                                <tr>
-                                    <td>EMAIL:</td>
-                                    <td id="email:<?php echo $loop->id; ?>" contenteditable="true" class="editable"><?php echo $loop->email; ?></td>
-
-
-                                </tr>
-                                <tr>
-                                    <td>PASSWORD REST</td>
-                                    <td>
-
-                                        <a href="<?php echo base_url() . "index.php/user/reset/" . $loop->id; ?>" class="tooltip-info qualification" data-rel="tooltip" title="verify">
-                                            <span class="red">
-                                                <i class="icon-lock bigger-120 text-danger"></i>Reset   </span>
-                                        </a>
-                                    </td>
-                                </tr> 
-                                <tr>
-                                    <td>Change password</td>
-                                    <td> <?php
-                                        if ($loop->id == $this->session->userdata('userID')) {
-                                            ?>
-                                            <form id="identicalForm"  enctype="multipart/form-data" class="form-horizontal form-label-left"  action='<?= base_url(); ?>index.php/user/update_password'  method="post">                                       
-
-                                                <div class="form-group">
-                                                    <label for="email">Password:</label>
-                                                    <input type="password" class="form-control" name="password" id="password" placeholder="Password" value="" />                                                   
-
-                                                </div>
-                                                <div class="form-group">
-                                                    <label for="pwd">Confirm password:</label>
-                                                    <input type="password" class="form-control" name="confirmPassword" id="confirmPassword" placeholder="Confirm password" value="" />
-
-                                                </div>  
-
-                                                <input type="hidden" name="userID" id="userID" value="<?php echo $loop->userID; ?>" />     
-                                                <button id="send" class="btn btn-danger" type="submit" >Change password</button>
-
-
-                                            </form>                                        
-                                        <?php } ?> </td>
-
-                                </tr>
+                          
                                 <tr>
                                     <td>Change profile picture</td>
                                     <td>
-                                        <form  enctype="multipart/form-data" class="form-horizontal form-label-left"  action='<?= base_url(); ?>index.php/user/update_image'  method="post">                                       
+                                        <form  enctype="multipart/form-data" class="form-horizontal form-label-left"  action='<?= base_url(); ?>index.php/company/update_image'  method="post">                                       
                                             <div class="form-group">
                                                 <input type="file" class="form-control" name="userfile" id="userfile" />
                                             </div>
@@ -198,7 +151,7 @@
             $("td[contenteditable=true]").blur(function () {
                 var field_id = $(this).attr("id");
                 var value = $(this).text();
-                $.post('<?php echo base_url() . "index.php/user/update_profile/"; ?>', field_id + "=" + value, function (data) {
+                $.post('<?php echo base_url() . "index.php/company/update_profile/"; ?>', field_id + "=" + value, function (data) {
                     if (data != '')
                     {
                         message_status.show();

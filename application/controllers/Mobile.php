@@ -33,22 +33,54 @@ class Mobile extends CI_Controller {
 
         $this->load->view('org-page', $data);
     }
+     public function routes() {
+       
+        $companyID = $this->input->post('companyID');        
+        $g = new stdClass();
+        $count = 1;
+        $query2 = $this->Md->query("select * from route");// WHERE company='" . $companyID . "'");      
+        $results = $query2;
+        foreach ($results as $res) {
+            $r = new stdClass();
+            $r->count = $count++;
+            $r->name = $res->name;
+            $r->cost = $res->cost;           
+            $r->start = $res->start_time;
+            $r->end = $res->end_time;
+            $g->routes[] = $r;
+        }
+        header('Content-Type: application/json');
+        echo json_encode($g);
+    }
+    public function bus() {
+       
+        $companyID = $this->input->post('companyID');        
+        $g = new stdClass();
+        $count = 1;
+        $query2 = $this->Md->query("select * from bus"); // WHERE companyID='" . $companyID . "'");      
+        $results = $query2;
+        foreach ($results as $res) {
+            $r = new stdClass();
+            $r->count = $count++;
+            $r->name = $res->name;
+            $r->noPlate= $res->regNo;           
+            $r->seat = $res->seat;           
+            $g->buses[] = $r;
+        }
+        header('Content-Type: application/json');
+        echo json_encode($g);
+    }
 
     public function login() {
 
         $this->load->helper(array('form', 'url'));
 
-       $contact = $this->input->post('contact');
+        $contact = $this->input->post('contact');
         $password = $this->input->post('password');
-        //$contact = '0782481746';
-         //$password = '1234562';
-
-
-        $query = $this->Md->query("SELECT *,user.name AS name,company.name AS company,user.id AS id,company.id AS companyID,user.image AS image,company.image AS logo FROM user LEFT JOIN company ON company.id = user.company WHERE user.contact='" . $contact . "'");
-
-
-        if ($query) {
-
+       // $contact = '0752336721';
+        //$password = '123456';
+        $query = $this->Md->query("SELECT *,user.active AS active,bus.seat AS MAX_SEAT,user.name AS name,company.name AS company,user.id AS id,company.id AS companyID,user.image AS image,company.image AS logo FROM user LEFT JOIN company ON company.id = user.company LEFT JOIN bus ON bus.regNo= user.bus WHERE user.contact='" . $contact . "'");
+        if ($query) {            
             foreach ($query as $res) {
 
                 if ($res->password == md5($password)) {
@@ -67,8 +99,10 @@ class Mobile extends CI_Controller {
                     $b["companyID"] = $res->companyID;
                     $b["company"] = $res->company;
                     $b["userID"] = $res->id;
+                    $b["bus"] = $res->bus;
+                    $b["seats"] = $res->MAX_SEAT;
+                    $b["route"] = $res->route;
                     $b["contact"] = $res->name;
-
                     echo json_encode($b);
                     return;
                 } else {
@@ -86,64 +120,7 @@ class Mobile extends CI_Controller {
         }
     }
 
-    public function calendar() {
 
-        $this->load->helper(array('form', 'url'));
-        // $info = array('name' =>'true');
-        $userid = $this->input->post('userid');
-
-        $query = $this->Md->query("SELECT * FROM attend INNER JOIN schedule ON attend.scheduleID = schedule.id WHERE attend.userID ='" . $userid . "' AND attend.name<>'true'");
-        //update_dynamic($by, $field, $table, $data)       
-        echo json_encode($query);
-        //  $this->Md->update_dynamic($userid, "userID" ,"attend",$info);
-        return;
-    }
-
-    public function updated() {
-
-        $this->load->helper(array('form', 'url'));
-        $info = array('name' => 'true');
-        $userid = $this->input->post('userid');
-        $this->Md->update_dynamic($userid, "userID", "attend", $info);
-        return;
-    }
-
-    public function users() {
-
-
-        $data['users'] = array();
-        $data['orgs'] = array();
-        $query = $this->Md->query("SELECT * FROM users");
-        if ($query)
-            $data['users'] = $query;
-
-        $query = $this->Md->query("SELECT * FROM organisation");
-        if ($query)
-            $data['orgs'] = $query;
-
-        $this->load->view('users-page', $data);
-    }
-
-    public function procedures() {
-
-
-        $data['users'] = array();
-        $data['orgs'] = array();
-        $data['procedures'] = array();
-        $query = $this->Md->query("SELECT * FROM users");
-        if ($query)
-            $data['users'] = $query;
-
-        $query = $this->Md->query("SELECT * FROM organisation");
-        if ($query)
-            $data['orgs'] = $query;
-
-        $query = $this->Md->query("SELECT * FROM procedures");
-        if ($query)
-            $data['procs'] = $query;
-
-        $this->load->view('procedure-page', $data);
-    }
 
     public function update() {
 
@@ -203,56 +180,8 @@ class Mobile extends CI_Controller {
         }
     }
 
-    public function exists() {
-        $this->load->helper(array('form', 'url'));
-        $email = trim($this->input->post('user'));
-        if (strlen($email) < 5) {
-            echo '<span style="color:#f00"> empty field! too short </span>';
-            return;
-        }
-        $get_result = $this->Md->returns($email, 'email', 'users');
-        //href= "index.php/patient/add_chronic/'.$chronic.'"
-        if (!$get_result) {
-            echo '<span style="color:#008000"> available not in use </span>';
-        } else {
-            echo '<span style="color:#f00"> not available ! already in use </span> <br>';
-            echo '' . $get_result->contact . '<br>';
-            echo '' . $get_result->email . '<br>';
-            echo '' . $get_result->address . '<br>';
-        }
-    }
 
-    public function name() {
-        $this->load->helper(array('form', 'url'));
-        $name = trim($this->input->post('name'));
-        if (strlen($name) < 3) {
-            echo '<span style="color:#f00"> empty field </span>';
-            return;
-        }
-        $get_result = $this->Md->returns($name, 'name', 'organisation');
-        //href= "index.php/patient/add_chronic/'.$chronic.'"
-        if (!$get_result) {
-            echo '<span style="color:#008000"> available not in use </span>';
-        } else {
-            echo '<span style="color:#f00"> ! already in use </span> <br>';
-        }
-    }
 
-    public function code() {
-        $this->load->helper(array('form', 'url'));
-        $code = trim($this->input->post('code'));
-        if (strlen($code) < 1) {
-            echo '<span style="color:#f00"> empty field </span>';
-            return;
-        }
-        $get_result = $this->Md->returns($code, 'code', 'organisation');
-        //href= "index.php/patient/add_chronic/'.$chronic.'"
-        if (!$get_result) {
-            echo '<span style="color:#008000"> available not in use </span>';
-        } else {
-            echo '<span style="color:#f00"> not available ! already in use </span> <br>';
-        }
-    }
 
     public function GUID() {
         if (function_exists('com_create_guid') === true) {
@@ -285,154 +214,7 @@ class Mobile extends CI_Controller {
         }
 
         return $key_string;
-    }
-
-    public function register() {
-//organisation information
-        $this->load->helper(array('form', 'url'));
-        $name = $this->input->post('name');
-        $code = $this->input->post('code');
-        $license = $this->generate_key_string();
-        $address = $this->input->post('address');
-        $active = 'T';
-        $starts = date('Y-m-d');
-        $yourDate = date('Y-m-d');
-        $mydate = date('Y-m-d', strtotime('+6 month', strtotime($yourDate)));
-        $ends = $mydate;
-        $sync = "";
-        $oid = '';
-        $action = '';
-        $key = '';
-        $version = '';
-        $orgid = $this->GUID();
-
-        //user information
-        $userid = $this->GUID();
-        $email = $this->input->post('email');
-        $first = $this->input->post('first');
-        $last = $this->input->post('last');
-        $username = $first . ' ' . $last;
-        $password = $this->input->post('password');
-        $email = $this->input->post('email');
-        $contact = $this->input->post('contact');
-        $gender = "";
-        $level = 1;
-        $type = 'administrator';
-
-
-
-        if ($first != "" && $last != "") {
-
-            $password = $password;
-            $key = $email;
-            $password = $this->encrypt->encode($password, $key);
-            $result = $this->Md->check($email, 'email', 'users');
-
-            if (!$result) {
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">                                                   
-                                                <strong>
-                                                 email already in use please try again	</strong>									
-						</div>');
-                redirect('/organisation/register', 'refresh');
-            }
-
-            $result_org = $this->Md->check($code, 'code', 'organisation');
-
-            if (!$result_org) {
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">                                                   
-                                                <strong>
-                                                 organisation code already registered</strong>									
-						</div>');
-                redirect('/organisation/register', 'refresh');
-            }
-
-            $result_org = $this->Md->check($name, 'name', 'organisation');
-
-            if (!$result_org) {
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">                                                   
-                                                <strong>
-                                                 organisation name already registered</strong>									
-						</div>');
-                redirect('/organisation/register', 'refresh');
-            }
-
-
-            ///organisation image uploads
-            $file_element_name = 'userfile';
-            $file_element_organisation = 'orgfile';
-            $config['upload_path'] = 'uploads/';
-            // $config['upload_path'] = '/uploads/';
-            $config['allowed_types'] = '*';
-            $config['encrypt_name'] = FALSE;
-
-            $this->load->library('upload', $config);
-            if (!$this->upload->do_upload($file_element_name)) {
-                $status = 'error';
-                $msg = $this->upload->display_errors('', '');
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">                                                   
-                                                <strong>' . $msg . '</strong></div>');
-            }
-            if (!$this->upload->do_upload($file_element_organisation)) {
-                $status = 'error';
-                $msg = $this->upload->display_errors('', '');
-                $this->session->set_flashdata('msg', '<div class="alert alert-error">                                                  
-                                                <strong>' . $msg . '</strong></div>');
-            }
-            $data = $this->upload->data();
-
-            ///user image uploads
-
-            $submitted = date('Y-m-d');
-            $orgfile = $data['file_name'];
-            $userfile = $data['file_name'];
-
-            $users = array('id' => $userid, 'image' => '', 'email' => $email, 'name' => $username, 'org' => $orgid, 'address' => $address, 'sync' => $sync, 'oid' => $oid, 'contact' => $contact, 'password' => $password, 'types' => $type, 'level' => $level, 'created' => date('Y-m-d H:i:s'), 'status' => 'T');
-            $this->Md->save($users, 'users');
-
-            // $client = array('org' => $orgid,'name' => 'web', 'active' => 'T', 'created' =>  date('Y-m-d H:i:s'));
-            //$file_id = $this->Md->save($client, 'client');
-            ///syncs
-            $content = array('id' => $userid, 'image' => $userfile, 'email' => $email, 'name' => $username, 'org' => $orgid, 'address' => $address, 'sync' => $sync, 'oid' => $oid, 'contact' => $contact, 'password' => $password, 'types' => $type, 'level' => $level, 'created' => date('Y-m-d H:i:s'), 'status' => 'T');
-            $content = json_encode($content);
-
-            $query = $this->Md->query("SELECT * FROM client where org = '" . $orgid . "'");
-            if ($query) {
-                foreach ($query as $res) {
-                    $syc = array('object' => 'users', 'contents' => $content, 'action' => 'create', 'oid' => $userid, 'created' => date('Y-m-d H:i:s'), 'checksum' => $this->GUID(), 'client' => $res->name);
-                    $file_id = $this->Md->save($syc, 'sync_data');
-                }
-            }
-            /*             * */
-            $org = array('id' => $orgid, 'image' => $orgfile, 'name' => $name, 'ends' => $ends, 'starts' => $starts, 'sync' => $sync, 'active' => $active, 'oid' => $oid, 'address' => $address, 'keys' => $license, 'version' => $version, 'code' => $code);
-            $file_id = $this->Md->save($org, 'organisation');
-
-            $this->session->set_flashdata('msg', '<div class="alert alert-success">
-                                   <strong>information submitted</strong>									
-						</div>');
-            $newdata = array(
-                'id' => $res->id,
-                'username' => $username,
-                'name' => $name,
-                'email' => $email,
-                'orgimage' => $orgfile,
-                'orgid' => $orgid,
-                'address' => $address,
-                'userimage' => $userfile,
-                'starts' => $starts,
-                'ends' => $ends,
-                'code' => $code,
-                'license' => $license,
-                'level' => $level,
-                'status' => $status,
-                'logged_in' => TRUE
-            );
-
-            $this->session->set_userdata($newdata);
-            redirect('/welcome/home', 'refresh');
-        }
-        $this->index();
-    }
-
+    }   
     public function logout() {
 
         $this->session->sess_destroy();
@@ -443,109 +225,5 @@ class Mobile extends CI_Controller {
         $this->load->view('private');
     }
 
-    public function management() {
-
-        $cty = $this->session->userdata('country');
-
-        $name = $this->session->userdata('name');
-        $query = $this->Md->get('reciever', $name, 'chat');
-        //  var_dump($query);
-        if ($query) {
-            $data['chats'] = $query;
-        } else {
-            $data['chats'] = array();
-        }
-        $query = $this->Md->query("SELECT * FROM outbreak where country = '" . $cty . "'");
-        //  var_dump($query);
-        if ($query) {
-            $data['outbreaks'] = $query;
-        } else {
-            $data['outbreaks'] = array();
-        }
-
-        $query = $this->Md->query("SELECT * FROM publication where country = '" . $cty . "'");
-        //  var_dump($query);
-        if ($query) {
-            $data['pubs'] = $query;
-        } else {
-            $data['pubs'] = array();
-        }
-        $query = $this->Md->query("SELECT * FROM student where status = 'false'");
-        //  var_dump($query);
-        if ($query) {
-            $data['student_cnt_false'] = $query;
-        } else {
-            $data['student_cnt_false'] = array();
-        }
-
-        $query = $this->Md->query("SELECT * FROM publication where verified = 'false'");
-        //  var_dump($query);
-        if ($query) {
-            $data['publication_cnt_review'] = $query;
-        } else {
-            $data['publication_cnt_review'] = array();
-        }
-        $query = $this->Md->query("SELECT * FROM publication where accepted = 'no'");
-        //  var_dump($query);
-        if ($query) {
-            $data['publication_cnt_accepted'] = $query;
-        } else {
-            $data['publication_cnt_accepted'] = array();
-        }
-
-        $query = $this->Md->query("SELECT * FROM presentation where accepted = 'no'");
-        //  var_dump($query);
-        if ($query) {
-            $data['present_cnt_accepted'] = $query;
-        } else {
-            $data['present_cnt_accepted'] = array();
-        }
-
-
-        $this->load->view('center_page', $data);
-    }
-
-    public function projects() {
-
-        $query = $this->Md->show('project');
-        if ($query) {
-            $data['projects'] = $query;
-        } else {
-            $data['projects'] = array();
-        }
-
-
-        $this->load->view('projects', $data);
-    }
-
-    public function services() {
-
-        $query = $this->Md->show('service');
-        if ($query) {
-            $data['services'] = $query;
-        } else {
-            $data['services'] = array();
-        }
-        $this->load->view('services', $data);
-    }
-
-    public function profile() {
-
-        $query = $this->Md->show('profile');
-        if ($query) {
-            $data['profiles'] = $query;
-        } else {
-            $data['profiles'] = array();
-        }
-        $this->load->view('profile', $data);
-    }
-
-    public function contact() {
-        $this->load->view('contact');
-    }
-
-    public function project() {
-        $this->load->view('project');
-    }
-
+   
 }

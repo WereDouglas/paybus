@@ -29,6 +29,8 @@
                                     <th>#</th>
                                     <th>Name</th>
                                     <th>Actions</th>
+                                    <th>Views</th>
+                                    <th>Tier</th>
                                     <th class="hidden-phone"></th>
 
                                 </tr>
@@ -37,6 +39,10 @@
 
                                 <?php
                                 if (is_array($roles) && count($roles)) {
+                                    $editable = "true";
+                                    if ($this->session->userdata('companyID') != "") {
+                                        $editable = "false";
+                                    }
                                     foreach ($roles as $loop) {
                                         ?>  
                                         <tr class="odd">
@@ -46,10 +52,15 @@
                                             <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->name; ?>
                                             </td>
-                                             <td id="actions:<?php echo $loop->id; ?>" contenteditable="true">
+                                            <td id="actions:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->actions; ?>
                                             </td>
-
+                                            <td id="views:<?php echo $loop->id; ?>" contenteditable="true">
+                                                <?php echo $loop->views; ?>
+                                            </td>
+                                            <td id="tier:<?php echo $loop->id; ?>" contenteditable="<?php echo $editable; ?>">
+                                                <?php echo $loop->tier; ?>
+                                            </td>
                                             <td class="edit_td">
                                                 <a class="btn btn-danger btn-xs" href="<?php echo base_url() . "index.php/role/delete/" . $loop->id; ?>"><li class="fa fa-trash-o">Delete</li></a>
 
@@ -84,27 +95,31 @@
                 <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/role/create'  method="post">
 
                     <div class="form-group">
-                        <div class="col-sm-10">
-                            <input type="text" name="name" placeholder="Name" id="name" required class="form-control"/>
-                        </div>
+                        <label>Permission/role</label>
+                        <input type="text" name="name" placeholder="Name" id="name" required class="form-control"/>
+
                     </div>
                     <div class="form-group">
-                        <div class="col-sm-10">
-                            <textarea name="actions"  class="form-control"></textarea>
-                        </div>
+                        <label>User actions</label>
+                        <textarea name="actions"  class="form-control"></textarea>
+
                     </div>
                     <div class="form-group">
-                        <div class=" col-sm-10">
-                            <div class="checkbox checkbox_margin">
-                                <button class="btn btn-default pull-right" type="submit">SUBMIT</button> <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
-                            </div>
+                        <label>User views</label>
+                        <textarea name="views"  class="form-control"></textarea>
+                    </div>
+                    <div class="form-group">
+
+                        <div class="checkbox checkbox_margin">
+                            <button class="btn btn-default pull-right" type="submit">SUBMIT</button> <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
                         </div>
+
                     </div>
 
                 </form>
 
             </div>
-                  </div>
+        </div>
     </div>
 </div>
 <!-- sidebar chats -->

@@ -17,7 +17,7 @@ class Device extends CI_Controller {
 
     public function index() {
 
-        $query = $this->Md->query("SELECT *,user.name AS user FROM device LEFT JOIN user ON device.user = user.id");
+        $query = $this->Md->query("SELECT *,company.name AS company FROM device LEFT JOIN company ON company.id= device.companyID");
         // $query = $this->Md->query("SELECT * FROM client  ");
 
         if ($query) {
@@ -43,7 +43,7 @@ class Device extends CI_Controller {
         $name = $this->input->post('imei');
         if ($name != "") {
 
-            $d = array('imei' => $this->input->post('imei'), 'active' => $this->input->post('active'), 'user' => $this->input->post('userID'),'created' => date('d-m-Y'));
+            $d = array('imei' => $this->input->post('imei'), 'active' => $this->input->post('active'), 'companyID' => $this->input->post('companyID'),'created' => date('d-m-Y'));
             $this->Md->save($d, 'device');           
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);

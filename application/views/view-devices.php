@@ -20,8 +20,6 @@
                 </div>
                 <div class="alert alert-info" id="status"></div>
                 <div class="porlets-content">
-
-
                     <div class="table-responsive scroll">
                         <table  class="display table table-bordered table-striped" id="dynamic-table">
                             <thead>
@@ -29,7 +27,7 @@
                                     <th>#</th>
                                     <th>IMEI</th>
                                     <th>Active</th>
-                                    <th>User</th>
+                                    <th>Company</th>
                                      <th>Created</th>
                                     <th>Action</th>
 
@@ -51,7 +49,7 @@
 
                                             <td id="active:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->active; ?></td>
                                             <td >
-                                                <?php echo $loop->user; ?>
+                                                <?php echo $loop->company; ?>
                                             </td>
                                             <td id="created:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->created; ?></td>
                                             <td class="edit_td">
@@ -82,53 +80,51 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Add Route</h4>
+                <h4 class="modal-title" id="myModalLabel">Add Device</h4>
             </div>
             <div class="modal-body">             
                 <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/device/create'  method="post">
 
                     <div class="form-group">
-                        <div class="col-sm-10">
+                        
                             <input type="text" name="imei" placeholder="Device IMEI" id="imei" required class="form-control"/>
-                        </div>
+                      
                     </div>  
                     <div class=" item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">User</label>
-                        <div class="col-md-6 col-sm-5 col-xs-12">
+                        <label >Company</label>
+                      
 
-                            <input class="easyui-combobox form-control" name="userID" id="userID" style="width:100%;height:26px" data-options="
-                                   url:'<?php echo base_url() ?>index.php/user/lists',
+                            <input class="easyui-combobox form-control" name="companyID" id="companyID" style="width:100%;height:26px" data-options="
+                                   url:'<?php echo base_url() ?>index.php/company/lists',
                                    method:'get',
                                    valueField:'id',
                                    textField:'name',
                                    multiple:false,
                                    panelHeight:'auto'
                                    ">
-                        </div>
+                       
                     </div>               
                     <div class="form-group">
-                        <div class="col-sm-10">
+                       
                             <label >Active</label>
                             <select class="form-control" id="active" name="active">                                     
                                 <option value="true">true</option>
                                 <option value="false">false</option>                                  
                             </select>
-                        </div><!--/col-sm-9--> 
+                      
                     </div><!--/form-group-->
                     <div class="form-group">
-                        <div class=" col-sm-10">
-                            <div class="checkbox checkbox_margin">
-                                <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
-                            </div>
-                        </div>
+                       
+                             <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+     <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
+                           
                     </div>
 
                 </form>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
-
+              
             </div>
         </div>
     </div>

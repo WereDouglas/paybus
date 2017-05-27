@@ -95,46 +95,43 @@
         <div class="modal-content">
             <div class="modal-header">
                 <button type="button" class="close" data-dismiss="modal" aria-hidden="true">&times;</button>
-                <h4 class="modal-title" id="myModalLabel">Add Route</h4>
+                <h4 class="modal-title" id="myModalLabel">Add Company</h4>
             </div>
             <div class="modal-body">             
                 <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/company/create'  method="post">
 
                     <div class="form-group">
-                        <div class="col-sm-10">
-                            <input type="text" name="name" placeholder="Name" id="name" required class="form-control"/>
-                        </div>
+
+                        <input type="text" name="name" placeholder="Name" id="name" required class="form-control"/>
+
                     </div>   
                     <div class="item form-group">                    
-                        <label class="control-label col-md-12 col-sm-12 col-xs-12">Profile picture</label>  
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <input type="file" name="userfile" id="userfile" class="btn-default btn-small"/>
-                            <div id="imagePreview" ></div>      
-                        </div>
+                        <label >Profile picture</label>  
+
+                        <input type="file" name="userfile" id="userfile" class="btn-default btn-small"/>
+                        <div id="imagePreview" ></div>      
+
                     </div>
 
                     <div>
                         <div class="form-group">
 
-                            <div class="col-sm-10">
-                                <input type="text" name="location" placeholder="Location /Address"  class="form-control"/>
-                            </div>
+                            <input type="text" name="location" placeholder="Location /Address"  class="form-control"/>
+
                         </div>                  
 
 
                         <div class="form-group">
-                            <div class=" col-sm-10">
-                                <div class="checkbox checkbox_margin">
-                                    <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
-                                </div>
-                            </div>
+
+                            <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>
+                            <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
+
                         </div>
 
                 </form>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
 
             </div>
         </div>

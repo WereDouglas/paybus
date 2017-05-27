@@ -27,10 +27,10 @@
                             <thead>
                                 <tr>
                                     <th>ID</th>
-                                    <th>Name</th>
                                     <th>Registration No.</th>
+                                    <th>Bus name</th>
                                     <th>Company</th>
-                                      <th>No. of seats</th>
+                                    <th>No. of seats</th>
                                     <th class="hidden-phone">Route</th>
                                     <th class="hidden-phone">Active</th>
                                     <th class="hidden-phone">Created</th>
@@ -45,18 +45,19 @@
                                     foreach ($clients as $loop) {
                                         ?>  
                                         <tr class="odd">
-                                            <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
+                                            <td id="name:<?php echo $loop->id; ?>" contenteditable="false">
                                                 <?php echo $loop->id; ?>
                                             </td>
+                                            <td id="regNo:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->regNo; ?></td>
+
                                             <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
-                                                <?php echo $loop->name; ?>
+                                                <?php echo $loop->bus; ?>
                                             </td>
 
-                                            <td id="regNo:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->regNo; ?></td>
                                             <td>
                                                 <?php echo $loop->company; ?>
                                             </td>
-                                             <td id="seat:<?php echo $loop->id; ?>" contenteditable="true">
+                                            <td id="seat:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->seat; ?>
                                             </td>
                                             <td >
@@ -97,67 +98,45 @@
             </div>
             <div class="modal-body">             
                 <form id="station-form" parsley-validate novalidate role="form" class="form-horizontal" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/bus/create'  method="post">
-                    <div class=" item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Company</label>
-                        <div class="col-md-6 col-sm-5 col-xs-12">
 
-                            <input class="easyui-combobox form-control" name="companyID" id="companyID" style="width:100%;height:26px" data-options="
-                                   url:'<?php echo base_url() ?>index.php/company/lists',
-                                   method:'get',
-                                   valueField:'id',
-                                   textField:'name',
-                                   multiple:false,
-                                   panelHeight:'auto'
-                                   ">
-                        </div>
-                    </div>
-                    <div class=" item form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">Route</label>
-                        <div class="col-md-6 col-sm-5 col-xs-12">
+                    <div class=" form-group">
+                        <label>Route</label>
 
-                            <input class="easyui-combobox form-control" name="routeID" id="routeID" style="width:100%;height:26px" data-options="
-                                   url:'<?php echo base_url() ?>index.php/route/lists',
-                                   method:'get',
-                                   valueField:'id',
-                                   textField:'name',
-                                   multiple:false,
-                                   panelHeight:'auto'
-                                   ">
-                        </div>
+
+                        <input class="easyui-combobox form-control" name="routeID" id="routeID" style="width:100%;height:26px" data-options="
+                               url:'<?php echo base_url() ?>index.php/route/lists',
+                               method:'get',
+                               valueField:'id',
+                               textField:'name',
+                               multiple:false,
+                               panelHeight:'auto'
+                               ">
+
                     </div>
 
                     <div class="form-group">
-                        <div class="col-sm-10">
-                            <input type="text" name="regNo" placeholder="Bus registration No." id="regNo" required class="form-control"/>
-                        </div>
+
+                        <input type="text" name="regNo" placeholder="Bus registration No." id="regNo" required class="form-control"/>
+
                     </div>
-                     <div class="form-group">
+                    <div class="form-group">                        
+                        <input type="number" name="seats" placeholder="No. of seats" id="seats" required="true"  class="form-control"/>
 
-                        <div class="col-sm-10">
-                            <input type="text" name="seats" placeholder="No. of seats" id="seats"  class="form-control"/>
-                        </div>
-                    </div>
-
-
-                    <div class="form-group">
-
-                        <div class="col-sm-10">
-                            <input type="text" name="name" placeholder="name" id="name"  class="form-control"/>
-                        </div>
                     </div>
                     <div class="form-group">
-                        <div class=" col-sm-10">
-                            <div class="checkbox checkbox_margin">
-                                <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
-                            </div>
-                        </div>
+                        <input type="text" name="name" placeholder="name" id="name"  class="form-control"/>
+
+                    </div>
+                    <div class="form-group">
+                        <button type="button" class="btn btn-default pull-left" data-dismiss="modal">Close</button>  <button class="btn btn-default pull-right" type="submit">SUBMIT</button>
+
                     </div>
 
                 </form>
 
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-default pull-right" data-dismiss="modal">Close</button>
+
 
             </div>
         </div>

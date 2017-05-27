@@ -65,11 +65,11 @@ class Home extends CI_Controller {
             if ($query) {
                 $data['drivers'] = $query;
             }
-            $query = $this->Md->query("SELECT * FROM bus where  companyID='" . $this->session->userdata('companyID') . "'");
+            $query = $this->Md->query("SELECT * FROM bus where companyID='" . $this->session->userdata('companyID') . "'");
             if ($query) {
                 $data['buses'] = $query;
             }
-            $query = $this->Md->query("SELECT * FROM payment where  companyID='" . $this->session->userdata('companyID') . "' AND date LIKE '%" . date('d-m-Y') . "%' ");
+            $query = $this->Md->query("SELECT * FROM payment where companyID='" . $this->session->userdata('companyID') . "' AND date LIKE '%" . date('d-m-Y') . "%' ");
 
             if ($query) {
                 $data['payments_today'] = $query;
@@ -82,7 +82,6 @@ class Home extends CI_Controller {
             if ($query) {
                 $data['payments_year'] = $query;
             }
-
         
         $this->load->view('start-page', $data);
     }

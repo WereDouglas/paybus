@@ -2,7 +2,7 @@
 
 defined('BASEPATH') OR exit('No direct script access allowed');
 
-class User extends CI_Controller {
+class Administrator extends CI_Controller {
 
     function __construct() {
 
@@ -19,21 +19,15 @@ class User extends CI_Controller {
     public function index() {
         //  $query = $this->Md->query("SELECT * FROM client where org = '" . $this->session->userdata('orgID') . "' ");
 
-        if (strpos($this->session->userdata('permission'), 'administrator') == true) {
-            $query = $this->Md->query("SELECT *,user.id AS id ,user.image AS image,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role WHERE roles.name<>'Administrator'");
-        } else {
-            $query = $this->Md->query("SELECT *,user.id AS id,user.image AS image ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role WHERE user.company='" . $this->session->userdata('companyID') . "' AND roles.name<>'Administrator'");
-        }
+      
+            $query = $this->Md->query("SELECT *,user.id AS id,user.image AS image ,company.name AS company,user.name AS name,roles.name AS role FROM user LEFT JOIN company ON user.company = company.id LEFT JOIN roles ON  roles.id = user.role WHERE roles.name='Administrator'");
+        
         if ($query) {
             $data['users'] = $query;
         } else {
             $data['users'] = array();
         }
-        if ($this->session->userdata('companyID') == "") {
-            $query = $this->Md->query("SELECT * FROM roles");
-        } else {
-            $query = $this->Md->query("SELECT * FROM roles WHERE name<>'Administrator' AND companyID='" . $this->session->userdata('companyID') . "' ");
-        }
+        $query = $this->Md->query("SELECT * FROM roles");
         if ($query) {
             $data['roles'] = $query;
         }
@@ -77,20 +71,24 @@ class User extends CI_Controller {
                 $msg = $this->upload->display_errors('', '');
                 $status .= '<div class="alert alert-error"> <strong>' . $msg . '</strong></div>';
             }
+            if (strpos($this->session->userdata('permission'), 'admin') == true) {
 
-            if ($this->session->userdata('companyID') != "") {
+                $companyID = $this->input->post('companyID');
+            } else {
 
                 $companyID = $this->session->userdata('companyID');
-            } else {
-                $companyID = $this->input->post('companyID');
             }
 
             $data = $this->upload->data();
             $userfile = $data['file_name'];
+            if($this->input->post('role')=="Administrator") {
 
-            $user = array('name' => $this->input->post('name'),'route' => $this->input->post('route'), 'role' => $this->input->post('role'), 'company' => $companyID, 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true','bus'=>  $this->input->post('bus'));
-            $this->Md->save($user, 'user');
-
+                $user = array('name' => $this->input->post('name'),'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')));
+                $this->Md->save($user, 'administrator');
+            } else {
+                $user = array('name' => $this->input->post('name'), 'role' => $this->input->post('role'), 'company' => $companyID, 'contact' => $this->input->post('contact'), 'email' => $this->input->post('email'), 'password' => md5($this->input->post('password')), 'image' => $userfile, 'created' => date('Y-m-d H:i:s'), 'active' => 'true');
+                $this->Md->save($user, 'user');
+            }
 
 
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
