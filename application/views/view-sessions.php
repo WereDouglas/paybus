@@ -26,16 +26,14 @@
                             <thead>
                                 <tr>
                                     <th>#</th>
-                                    <th>DATE</th>
-                                    <th>ID</th>
-                                    <th>ROUTE</th>
-                                    <th>COMPANY</th>                                    
-                                    <th class="hidden-phone">SEATS</th>
-                                    <th>STATUS</th>
-                                    <th class="hidden-phone">COST</th>                                   
-                                    <th class="hidden-phone">USER</th>                                    
+                                    <th>Date</th>
+                                    <th>Id</th>
+                                    <th>Payments</th>
+                                    <th>Expenses</th>                                    
+                                    <th class="hidden-phone">Payment Counts</th>
+                                    <th>Expense Counts</th>                                                                
+                                    <th class="hidden-phone">User</th>                                    
                                     <th class="hidden-phone">Actions</th>
-
                                 </tr>
                             </thead>
                             <tbody>
@@ -54,20 +52,19 @@
                                             <td id="sessionID:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->sessionID; ?>
                                             </td>
-                                            <td id="route:<?php echo $loop->id; ?>" contenteditable="true">
-                                                <?php echo $loop->route; ?>
+                                            <td id="payments:<?php echo $loop->id; ?>" contenteditable="true">
+                                                <?php echo $loop->payments; ?>
                                             </td>
-                                            
-                                            <td>
-                                                <?php echo $loop->company; ?>
+                                             <td id="expenses:<?php echo $loop->id; ?>" contenteditable="true">
+                                                <?php echo $loop->expenses; ?>
                                             </td>
-                                            <td id="max:<?php echo $loop->id; ?>" contenteditable="true">
-                                                <?php echo $loop->max; ?>
+                                            <td id="payment_counts:<?php echo $loop->id; ?>" contenteditable="true">
+                                                <?php echo $loop->payment_counts; ?>
                                             </td>
-                                            <td id="status:<?php echo $loop->id; ?>" contenteditable="true">
-                                                <?php echo $loop->status; ?>
-                                            </td>
-                                            <td ><?php echo number_format($loop->cost); ?></td>
+                                            <td id="expense_counts:<?php echo $loop->id; ?>" contenteditable="true">
+                                                <?php echo $loop->expense_counts; ?>
+                                            </td>                                          
+                                           
                                             <td ><?php echo $loop->user; ?></td> 
                                          
                                             <td class="edit_td">
@@ -107,7 +104,7 @@
             $("td[contenteditable=true]").blur(function () {
                 var field_id = $(this).attr("id");
                 var value = $(this).text();
-                $.post('<?php echo base_url() . "index.php/payment/update/"; ?>', field_id + "=" + value, function (data) {
+                $.post('<?php echo base_url() . "index.php/session/update/"; ?>', field_id + "=" + value, function (data) {
                     if (data != '')
                     {
                         message_status.show();

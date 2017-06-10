@@ -17,7 +17,7 @@ class Payment extends CI_Controller {
 
     public function index() {
 
-        if ($this->session->userdata('companyID') == "") {
+        if ($this->session->userdata('sessionID') == "admin") {
             $query = $this->Md->query("SELECT *,payment.cost AS cost,payment.name AS name,payment.contact AS contact,payment.bus AS bus,user.name AS user,payment.id AS id,payment.contact As contact,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON  route.id =  payment.routeID LEFT JOIN user ON user.id = payment.userID  WHERE payment.date = '" . date('d-m-Y') . "'");
         } else {
             $query = $this->Md->query("SELECT *,payment.name AS name,payment.contact AS contact,payment.bus AS bus,payment.cost AS cost,user.name AS user,payment.id AS id,route.name AS route, payment.name AS name,payment.created AS created,payment.date As date,route.start_time AS start FROM payment LEFT JOIN route ON route.id= payment.routeID LEFT JOIN user ON user.id = payment.userID   WHERE payment.companyID ='" . $this->session->userdata('companyID') . "' AND payment.date = '" . date('d-m-Y') . "'");
@@ -27,7 +27,7 @@ class Payment extends CI_Controller {
         } else {
             $data['clients'] = array();
         }
-         $query = $this->Md->query("SELECT *,user.name AS user,expenses.id AS id  FROM expenses LEFT JOIN company ON company.id =  expenses.companyID LEFT JOIN user ON user.id = expenses.userID WHERE expenses.companyID ='" . $this->session->userdata('companyID') . "' AND expenses.created = '" . date('d-m-Y') . "'");
+         $query = $this->Md->query("SELECT *,user.name AS user,expenses.id AS id,expenses.created AS created,user.created AS date  FROM expenses LEFT JOIN company ON company.id =  expenses.companyID LEFT JOIN user ON user.id = expenses.userID WHERE expenses.companyID ='" . $this->session->userdata('companyID') . "' AND expenses.created = '" . date('d-m-Y') . "'");
          
         if ($query) {
             $data['exp'] = $query;
@@ -93,7 +93,7 @@ class Payment extends CI_Controller {
         if ($years) {
             $sql[] = "YEAR(STR_TO_DATE(date,'%d-%m-%Y')) = '$years' ";
         }
-        if ($this->session->userdata('companyID') == "") {
+        if ($this->session->userdata('sessionID') == "admin") {
             if ($this->input->post('companyID') != "") {
                 $companyID = trim($this->input->post('companyID'));
                 $sql[] = "payment.companyID = " . $companyID . " ";
@@ -211,7 +211,7 @@ class Payment extends CI_Controller {
         if ($from != '' & $to != '') {
             $sql[] = "DAY(STR_TO_DATE(date,'%d-%m-%Y')) BETWEEN '$from' AND '$to' ";
         }
-        if ($this->session->userdata('companyID') == "") {
+        if ($this->session->userdata('sessionID') == "admin") {
             if ($this->input->post('companyID') != "") {
                 $companyID = trim($this->input->post('companyID'));
                 $sql[] = "payment.companyID = " . $companyID . " ";

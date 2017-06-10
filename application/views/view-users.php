@@ -143,7 +143,7 @@
                         <input type="file" name="userfile" id="userfile" class="btn-default btn-small form-control"/>
                         <div id="imagePreview" ></div>                      
                     </div>
-                    <?php if ($this->session->userdata('role') == 'Administrator') { ?>
+                    <?php  if ($this->session->userdata('sessionID') == "admin") { ?>
                         <div class="form-group">
                             <label>Select company</label>
 

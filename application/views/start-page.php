@@ -143,9 +143,9 @@ if (is_array($payments_year) && count($payments_year)) {
 
 </head>
 <body>
-    <div id="page-wrapper" class="page-wrapper-cls">
-        <div id="page-inner">
-            <div class="row">
+    <div class="page-content">
+       
+            <div class="row alert">
                 <div class="col-md-12">
                     <?php
                     if (is_array($sum_today) && count($sum_today)) {
@@ -162,6 +162,7 @@ if (is_array($payments_year) && count($payments_year)) {
                     <a href="#" class="btn btn-info"><?php echo 'DRIVERS ' . count($drivers); ?></a>
                     <a href="#" class="btn btn-warning"><?php echo 'TOTAL TODAY ' . number_format($total_today); ?></a>
                     <hr>  
+                      </div>
                     <div class="col-md-12">
 
                         <div class="alert alert-info">
@@ -175,7 +176,7 @@ if (is_array($payments_year) && count($payments_year)) {
 
 
                 </div>
-            </div>
+          
 
             <!-- /. PAGE INNER  -->
         </div>

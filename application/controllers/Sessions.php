@@ -16,10 +16,10 @@ class Sessions extends CI_Controller {
 
     public function index() {
 
-        if ($this->session->userdata('companyID') == "") {
-            $query = $this->Md->query("SELECT *,sessions.route AS route,company.name AS company,user.name AS user,sessions.id AS id FROM sessions LEFT JOIN company ON  company.id = sessions.companyID LEFT JOIN user ON user.id = sessions.userID");
+        if ($this->session->userdata('sessionID') == "admin") {
+            $query = $this->Md->query("SELECT * ,company.name AS company,user.name AS user,sessions.id AS id FROM sessions LEFT JOIN company ON  company.id = sessions.companyID LEFT JOIN user ON user.id = sessions.userID");
         } else {
-            $query = $this->Md->query("SELECT *,sessions.route AS route,company.name AS company,user.name AS user,sessions.id AS id FROM sessions LEFT JOIN company ON  company.id = sessions.companyID LEFT JOIN user ON user.id = sessions.userID WHERE sessions.companyID='" . $this->session->userdata('companyID') . "'");
+            $query = $this->Md->query("SELECT *,company.name AS company,user.name AS user,sessions.id AS id FROM sessions LEFT JOIN company ON  company.id = sessions.companyID LEFT JOIN user ON user.id = sessions.userID WHERE sessions.companyID='" . $this->session->userdata('companyID') . "'");
         }
         if ($query) {
             $data['clients'] = $query;
@@ -163,10 +163,10 @@ class Sessions extends CI_Controller {
             $data['clients'] = array();
         }
         $quer = $this->Md->query("SELECT * FROM expenses WHERE sessionID = '" . $sessionID . "'");
-       // var_dump($query);
+        // var_dump($query);
         if ($quer) {
             $data['exp'] = $quer;
-        } 
+        }
         $this->load->view('view-payments', $data);
     }
 
@@ -405,7 +405,7 @@ class Sessions extends CI_Controller {
         // $route="1";
         if ($sessionID != "") {
 
-            $p = array('userID' => $this->input->post('userID'), 'sessionID' => $this->input->post('sessionID'), 'bus' => $this->input->post('bus'), 'route' => $this->input->post('route'), 'max' => $this->input->post('max'), 'status' => $this->input->post('status'), 'cost' => $this->input->post('cost'), 'companyID' => $this->input->post('companyID'), 'created' => date('d-m-Y'));
+            $p = array('userID' => $this->input->post('userID'), 'sessionID' => $this->input->post('sessionID'), 'payments' => $this->input->post('payments'), 'expenses' => $this->input->post('expenses'), 'payment_counts' => $this->input->post('payment_counts'), 'expense_counts' => $this->input->post('expense_counts'), 'companyID' => $this->input->post('companyID'), 'created' => date('d-m-Y'));
             $this->Md->save($p, 'sessions');
             if ($this->input->post('device') == "true") {
                 $b["info"] = "information saved !";

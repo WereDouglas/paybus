@@ -16,7 +16,8 @@ class Route extends CI_Controller {
     }
 
     public function index() {
-        if ($this->session->userdata('role') == "Administrator") {
+        
+        if ($this->session->userdata('sessionID') == "admin") {
             $query = $this->Md->query("SELECT *,route.name AS name,route.id AS id,company.name AS company,company.id AS compID FROM route LEFT JOIN company ON company.id = route.company ");
         } else {
 
@@ -45,7 +46,7 @@ class Route extends CI_Controller {
         // $clientID = $this->GUID();
         $name = $this->input->post('name');
         if ($name != "") {
-            $route = array('name' => $this->input->post('name'), 'startp' => $this->input->post('startp'), 'endp' => $this->input->post('endp'), 'company' => $this->session->userdata('companyID'), 'cost' => $this->input->post('cost'), 'startcoord' => $this->input->post('endcoord'), 'start_time' => $this->input->post('start_time'), 'end_time' => $this->input->post('end_time'), 'distance' => $this->input->post('distance'), 'created' => date('d-m-Y'));
+            $route = array('name' => $this->input->post('name'),'bus' => $this->input->post('bus'),'max_passengers' => $this->input->post('max_passengers'), 'startp' => $this->input->post('startp'), 'endp' => $this->input->post('endp'), 'company' => $this->session->userdata('companyID'), 'cost' => $this->input->post('cost'), 'startcoord' => $this->input->post('endcoord'), 'start_time' => $this->input->post('start_time'), 'end_time' => $this->input->post('end_time'), 'distance' => $this->input->post('distance'), 'created' => date('d-m-Y'));
             $this->Md->save($route, 'route');
             $status .= '<div class="alert alert-success">  <strong>Information submitted</strong></div>';
             $this->session->set_flashdata('msg', $status);

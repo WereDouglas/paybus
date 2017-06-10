@@ -15,7 +15,7 @@
 
                 <?php $months = array(1 => "January", 2 => "February", 3 => "March", 4 => "April", 5 => "May", 6 => "June", 7 => "July", 8 => "August", 9 => "September", 10 => "October", 11 => "November", 12 => "December"); ?>
                 <div class="row">
-                    <?php if (strpos($this->session->userdata('permission'), 'admin') == true) { ?>
+                    <?php if ($this->session->userdata('sessionID') == "admin")  { ?>
                         <div class="col-md-3" style="margin-top:3px;">
                             <label>Company</label>
                             <div class=" form-group">

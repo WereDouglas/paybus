@@ -18,7 +18,7 @@ class Role extends CI_Controller {
 
     public function index() {
 
-        if ($this->session->userdata('companyID') == "") {
+        if ($this->session->userdata('sessionID') == "admin") {
             $query = $this->Md->query("SELECT * FROM roles");
         } else {
 
@@ -47,7 +47,7 @@ class Role extends CI_Controller {
         //user information
         // $userID = $this->GUID();
         $name = $this->input->post('name');
-        if($this->session->userdata('companyID')!=""){            
+         if ($this->session->userdata('sessionID') == "admin") {        
             $tier="company";
         }
         else{$tier="Administrative";}

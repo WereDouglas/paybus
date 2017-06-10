@@ -29,6 +29,8 @@
                                     <th>#</th>
                                      <th>Company</th>
                                     <th>Route Name</th>
+                                     <th>Bus</th>
+                                      <th>Max No.Passengers</th>
                                     <th>Start point</th>
                                     <th>End point</th>
                                     <th class="hidden-phone">Cost</th>
@@ -56,6 +58,12 @@
                                             </td>
                                             <td id="name:<?php echo $loop->id; ?>" contenteditable="true">
                                                 <?php echo $loop->name; ?>
+                                            </td>
+                                             <td id="bus:<?php echo $loop->id; ?>" contenteditable="true">
+                                                <?php echo $loop->bus; ?>
+                                            </td>
+                                             <td id="max_passengers:<?php echo $loop->id; ?>" contenteditable="true">
+                                                <?php echo $loop->max_passengers; ?>
                                             </td>
 
                                             <td id="startp:<?php echo $loop->id; ?>" contenteditable="true"><?php echo $loop->startp; ?></td>
@@ -104,7 +112,15 @@
                     <div class="form-group">
                             <input type="text" name="name" placeholder="Name" id="name" required class="form-control"/>
                    
-                    </div>                  
+                    </div> 
+                    <div class="form-group">
+                            <input type="text" name="bus" placeholder="Bus " id="bus"  class="form-control"/>
+                   
+                    </div> 
+                    <div class="form-group">
+                        <input type="number" name="max_passengers" placeholder="Max number of passengers" id="max_passengers"  class="form-control"/>
+                   
+                    </div> 
 
 
                     <div class="form-group">

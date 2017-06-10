@@ -47,6 +47,9 @@ class Mobile extends CI_Controller {
             $r->cost = $res->cost;           
             $r->start = $res->start_time;
             $r->end = $res->end_time;
+             $r->bus = $res->bus;
+              $r->id = $res->id;
+              $r->max_passengers = $res->max_passengers;
             $g->routes[] = $r;
         }
         header('Content-Type: application/json');

@@ -18,7 +18,7 @@ class Bus extends CI_Controller {
     public function index() {
 
 
-        if ($this->session->userdata('role') == "Administrator") {
+     if ($this->session->userdata('sessionID') == "admin") {
 
             $query = $this->Md->query("SELECT *,bus.name AS bus,bus.id AS id,company.name AS company,route.name AS route,bus.name AS name FROM bus LEFT JOIN company ON bus.companyID = company.id LEFT JOIN route ON bus.routeID = route.id ");
         } else {

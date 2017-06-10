@@ -43,7 +43,7 @@
 
                     <div class="panel panel-default col-md-6">
                         <div class="panel-body ">
-                            <img alt="avatar" class="center-block" height="80px" width="290px" src="<?= base_url(); ?>images/paybus.png">
+                            <img alt="avatar" class="center-block" height="80px" width="190px" src="<?= base_url(); ?>images/paybus.png">
 
                             <div class="form-group">
                                 <form id="station-form" class="form-login" name="login-form" enctype="multipart/form-data"  action='<?= base_url(); ?>index.php/welcome/login'  method="post">
@@ -88,6 +88,7 @@
                                     </div>
                                     <!-- modal -->		
                                 </form>	  	
+                                <a  href="<?php echo base_url() . "index.php/administration/"; ?>">Manage</a>
 
                             </div>
                         </div>

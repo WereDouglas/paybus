@@ -114,7 +114,6 @@
 
                         </li>
 
-
                         <li>
                             <a class="active-menu"  target="frame" href="<?php echo base_url() . "index.php/welcome/start"; ?>"><i class="fa fa-dashboard "></i>Dashboard</a>
                         </li>
@@ -164,11 +163,11 @@
                                 <a target="frame" href="<?php echo base_url() . "index.php/device/"; ?>"><i class="fa fa-arrow-circle-o-up"></i>Devices</a>
                             </li>
                         <?php } ?>
-                         <?php if (strpos($this->session->userdata('views'), 'sessions') == true) { ?>
+                       
                             <li>
                                 <a target="frame" href="<?php echo base_url() . "index.php/sessions/"; ?>"><i class="fa fa-barcode"></i>Payment session</a>
                             </li>
-                        <?php } ?>
+                     
 
 
                         <?php if (strpos($this->session->userdata('views'), 'payments') == true) { ?>
